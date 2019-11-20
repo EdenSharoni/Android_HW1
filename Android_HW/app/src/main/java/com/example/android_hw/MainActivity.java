@@ -7,6 +7,7 @@ import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
