@@ -5,238 +5,102 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_lego"
-    android:gravity="center"
     android:orientation="horizontal"
     tools:context=".GameActivity">
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pink_lego" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pink_lego" />
+
+
+    </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/player_lego" />
+            android:background="@drawable/red_lego" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/player_lego" />
+            android:background="@drawable/red_lego" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/player_lego" />
+            android:background="@drawable/blue_lego" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/player_lego" />
+            android:background="@drawable/blue_lego" />
 
     </LinearLayout>
 
     <!--<LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/blue_1"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/blue_lego" />
+            android:background="@drawable/green_lego" />
 
         <ImageView
-            android:id="@+id/blue_2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/blue_lego" />
-
-        <ImageView
-            android:id="@+id/blue_3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/blue_lego" />
-
-        <ImageView
-            android:id="@+id/blue_4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/blue_lego" />
-
-        <ImageView
-            android:id="@+id/blue_5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/blue_lego" />
-
-        <ImageView
-            android:id="@+id/blue_6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/blue_lego" />
-
-        <ImageView
-            android:id="@+id/blue_7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/blue_lego" />
-
+            android:background="@drawable/green_lego" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/red_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/red_lego" />
-
-        <ImageView
-            android:id="@+id/red_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/red_lego" />
-
-        <ImageView
-            android:id="@+id/red_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/red_lego" />
-
-        <ImageView
-            android:id="@+id/red_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/red_lego" />
-
-        <ImageView
-            android:id="@+id/red_5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/red_lego" />
-
-        <ImageView
-            android:id="@+id/red_6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/red_lego" />
-
-        <ImageView
-            android:id="@+id/red_7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/red_lego" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/yellow_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/yellow_lego" />
 
         <ImageView
-            android:id="@+id/yellow_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/yellow_lego" />
-
-        <ImageView
-            android:id="@+id/yellow_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/yellow_lego" />
-
-        <ImageView
-            android:id="@+id/yellow_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/yellow_lego" />
-
-        <ImageView
-            android:id="@+id/yellow_5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/yellow_lego" />
-
-        <ImageView
-            android:id="@+id/yellow_6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/yellow_lego" />
-
-        <ImageView
-            android:id="@+id/yellow_7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/yellow_lego" />
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/green_1"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/green_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/green_lego" />
-
-        <ImageView
-            android:id="@+id/green_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/green_lego" />
-
-        <ImageView
-            android:id="@+id/green_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/green_lego" />
-
-        <ImageView
-            android:id="@+id/green_5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/green_lego" />
-
-        <ImageView
-            android:id="@+id/green_6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/green_lego" />
-
-        <ImageView
-            android:id="@+id/green_7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/green_lego" />
-
-        <ImageView
-            android:id="@+id/green_8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/green_lego" />
-
 
     </LinearLayout>-->
-
 </LinearLayout>

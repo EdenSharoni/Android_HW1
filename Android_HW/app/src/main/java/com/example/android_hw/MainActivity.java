@@ -2,10 +2,9 @@ package com.example.android_hw;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -29,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         help.setOnClickListener(this);
         exit.setOnClickListener(this);
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
     }
 
     @Override
