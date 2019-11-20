@@ -1,5 +1,6 @@
 package com.example.android_hw;
 
+import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -12,30 +13,26 @@ import android.widget.Toast;
 public class GameActivity extends AppCompatActivity {
     private static final String TAG = GameActivity.class.getSimpleName();
     private LinearLayout linearLayoutManager;
-    private int height;
-    private int width;
+    private float height;
+    private float legoHeight;
+    private int loop;
+    private int amountOfLegoColumn = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        getScreenHeightAndWidth();
+        getScreenHeightDividedByLegoSize();
+        initLinearLayoutManager();
 
-
-        /*linearLayoutManager = new LinearLayout(this);
-        linearLayoutManager.setBackground(getResources().getDrawable(R.drawable.background_lego));
-        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutManager.setGravity(Gravity.CENTER);
-
-        for (int i = 0; i < 5; i++) {
-
+        for (int i = 0; i < amountOfLegoColumn; i++) {
             LinearLayout linearLayout = new LinearLayout(this);
             linearLayout.setWeightSum(1);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
             linearLayout.setGravity(Gravity.CENTER);
             linearLayoutManager.addView(linearLayout);
-            for (int j = 0; j < height; j++) {
+            for (int j = 0; j < loop; j++) {
                 ImageView imageView = new ImageView(this);
                 LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 imageView.setLayoutParams(lparams);
@@ -43,13 +40,20 @@ public class GameActivity extends AppCompatActivity {
                 linearLayout.addView(imageView);
             }
         }
-        setContentView(linearLayoutManager);*/
+        setContentView(linearLayoutManager);
     }
 
-    private void getScreenHeightAndWidth() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        height = displayMetrics.heightPixels;
-        width = displayMetrics.widthPixels;
+
+    private void initLinearLayoutManager() {
+        linearLayoutManager = new LinearLayout(this);
+        linearLayoutManager.setBackground(getResources().getDrawable(R.drawable.background_lego));
+        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutManager.setGravity(Gravity.CENTER);
+    }
+
+    private void getScreenHeightDividedByLegoSize() {
+        height = Resources.getSystem().getDisplayMetrics().heightPixels;
+        legoHeight = getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight();
+        loop = Math.round(height/legoHeight);
     }
 }
