@@ -28,7 +28,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
         getScreenHeightDividedByLegoSize();
         initFrameLayoutManager();
         initLinearLayoutWithLegoBlocks();
@@ -42,31 +41,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         frameLayoutManager.setBackground(getResources().getDrawable(R.drawable.background_lego));
     }
 
-
     private void initLinearLayoutWithLegoBlocks() {
-
         LinearLayout linearLayoutManager = new LinearLayout(this);
-        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutManager.setGravity(Gravity.CENTER);
-        linearLayoutManager.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-
-
-        drawable = getResources().getDrawable(R.drawable.blue_lego);
+        initLinearLayoutManager(linearLayoutManager);
 
         for (int i = 0; i < amountOfLegoColumn; i++) {
 
             LinearLayout linearLayout = new LinearLayout(this);
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            linearLayout.setGravity(Gravity.CENTER);
-            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
-
+            initLinearLayout(linearLayout, Gravity.CENTER);
             setColor();
 
             for (int j = 0; j < screenHeightDividedByLegoSize; j++) {
                 ImageView imageView = new ImageView(this);
                 imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 imageView.setBackground(drawable);
-
                 linearLayout.addView(imageView);
             }
             linearLayoutManager.addView(linearLayout);
@@ -76,15 +64,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initButton() {
         LinearLayout linearLayoutManager = new LinearLayout(this);
-        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutManager.setGravity(Gravity.CENTER);
-        linearLayoutManager.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        initLinearLayoutManager(linearLayoutManager);
 
         for (int i = 0; i < 2; i++) {
             LinearLayout linearLayout = new LinearLayout(this);
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            linearLayout.setGravity(Gravity.CENTER);
-            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
+            initLinearLayout(linearLayout, Gravity.CENTER);
+
             Button button = new Button(this);
             button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             button.setBackgroundColor(Color.TRANSPARENT);
@@ -98,18 +83,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initPlayer() {
         LinearLayout linearLayoutManager = new LinearLayout(this);
-        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutManager.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-        linearLayoutManager.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-
+        initLinearLayoutManager(linearLayoutManager);
 
         for (int j = 0; j < amountOfLegoColumn; j++) {
 
             LinearLayout linearLayout = new LinearLayout(this);
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            linearLayout.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
-
+            initLinearLayout(linearLayout, Gravity.CENTER | Gravity.BOTTOM);
 
             ImageView imageView = new ImageView(this);
             imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -147,6 +126,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         height = Resources.getSystem().getDisplayMetrics().heightPixels;
         legoHeight = getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight();
         screenHeightDividedByLegoSize = Math.round(height / legoHeight);
+    }
+
+    private void initLinearLayoutManager(LinearLayout linearLayoutManager) {
+        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutManager.setGravity(Gravity.CENTER);
+        linearLayoutManager.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+    }
+
+    private void initLinearLayout(LinearLayout linearLayout, int gravity) {
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(gravity);
+        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
     }
 
     @Override
