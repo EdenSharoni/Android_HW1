@@ -1,26 +1,28 @@
 package com.example.android_hw;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.Random;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = GameActivity.class.getSimpleName();
-    private LinearLayout linearLayoutManager;
-    private LinearLayout.LayoutParams layoutParams;
+    private FrameLayout frameLayoutManager;
     private Drawable drawable;
     private float height;
     private float legoHeight;
     private int screenHeightDividedByLegoSize;
-    private int amountOfLegoColumn = 2;
+    private int amountOfLegoColumn = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,52 +30,27 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         getScreenHeightDividedByLegoSize();
-        initLinearLayoutManager();
-        // initLinearLayoutWithLegoBlocks();
-       // initPlayer();
-        initButtons();
-        setContentView(linearLayoutManager);
+        initFrameLayoutManager();
+        initLinearLayoutWithLegoBlocks();
+        initButton();
+        initPlayer();
+        setContentView(frameLayoutManager);
     }
 
-    private void initButtons() {
-        for (int i = 0; i < 2; i++) {
-            LinearLayout linearLayout = new LinearLayout(this);
-            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            linearLayout.setGravity(Gravity.CENTER);
-            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
-
-            Button button = new Button(this);
-            layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            button.setLayoutParams(layoutParams);
-           // button.setVisibility(View.INVISIBLE);
-            linearLayout.addView(button);
-            linearLayoutManager.addView(linearLayout);
-        }
-
-    }
-
-    private void initPlayer() {
-
-        for (int i = 0; i < amountOfLegoColumn; i++) {
-            LinearLayout linearLayout = new LinearLayout(this);
-            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            linearLayout.setGravity(Gravity.CENTER);
-            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
-
-            ImageView imageView = new ImageView(this);
-            imageView.setBackground(getResources().getDrawable(R.drawable.player_lego));
-            layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.gravity = Gravity.BOTTOM;
-            imageView.setLayoutParams(layoutParams);
-            linearLayout.addView(imageView);
-            linearLayoutManager.addView(linearLayout);
-        }
+    private void initFrameLayoutManager() {
+        frameLayoutManager = new FrameLayout(this);
+        frameLayoutManager.setBackground(getResources().getDrawable(R.drawable.background_lego));
     }
 
 
     private void initLinearLayoutWithLegoBlocks() {
 
-        layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout linearLayoutManager = new LinearLayout(this);
+        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutManager.setGravity(Gravity.CENTER);
+        linearLayoutManager.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+
         drawable = getResources().getDrawable(R.drawable.blue_lego);
 
         for (int i = 0; i < amountOfLegoColumn; i++) {
@@ -87,12 +64,61 @@ public class GameActivity extends AppCompatActivity {
 
             for (int j = 0; j < screenHeightDividedByLegoSize; j++) {
                 ImageView imageView = new ImageView(this);
-                imageView.setLayoutParams(layoutParams);
+                imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 imageView.setBackground(drawable);
+
                 linearLayout.addView(imageView);
             }
             linearLayoutManager.addView(linearLayout);
         }
+        frameLayoutManager.addView(linearLayoutManager);
+    }
+
+    private void initButton() {
+        LinearLayout linearLayoutManager = new LinearLayout(this);
+        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutManager.setGravity(Gravity.CENTER);
+        linearLayoutManager.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+        for (int i = 0; i < 2; i++) {
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.setGravity(Gravity.CENTER);
+            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
+            Button button = new Button(this);
+            button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            button.setBackgroundColor(Color.TRANSPARENT);
+            button.setEnabled(true);
+            button.setOnClickListener(this);
+            linearLayout.addView(button);
+            linearLayoutManager.addView(linearLayout);
+        }
+        frameLayoutManager.addView(linearLayoutManager);
+    }
+
+    private void initPlayer() {
+        LinearLayout linearLayoutManager = new LinearLayout(this);
+        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutManager.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+        linearLayoutManager.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+
+        for (int j = 0; j < amountOfLegoColumn; j++) {
+
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+
+
+            ImageView imageView = new ImageView(this);
+            imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            imageView.setBackground(getResources().getDrawable(R.drawable.player_lego));
+
+            linearLayout.addView(imageView);
+            linearLayoutManager.addView(linearLayout);
+        }
+        frameLayoutManager.addView(linearLayoutManager);
     }
 
     private void setColor() {
@@ -117,17 +143,14 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
-    private void initLinearLayoutManager() {
-        linearLayoutManager = new LinearLayout(this);
-        linearLayoutManager.setBackground(getResources().getDrawable(R.drawable.background_lego));
-        linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutManager.setGravity(Gravity.CENTER);
-    }
-
     private void getScreenHeightDividedByLegoSize() {
         height = Resources.getSystem().getDisplayMetrics().heightPixels;
         legoHeight = getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight();
         screenHeightDividedByLegoSize = Math.round(height / legoHeight);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Toast.makeText(getApplicationContext(), "button", Toast.LENGTH_SHORT).show();
     }
 }
