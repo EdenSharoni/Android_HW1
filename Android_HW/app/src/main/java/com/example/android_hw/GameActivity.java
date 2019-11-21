@@ -39,6 +39,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<ImageView> legoArrayList = new ArrayList<>();
     private int lives = 3;
     private Random random;
+    private int numOfLego = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,6 +196,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
         }
+        Log.e(TAG, "playerCurrentPosition: "+ playerCurrentPosition);
+        Log.e(TAG, "player: "+ playerArrayList.get(playerCurrentPosition).getX()+ " " + playerArrayList.get(playerCurrentPosition).getY());
     }
 
     private void tickEndlessly() {
@@ -209,16 +212,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }, 1000);
     }
 
+    private void checkHit() {
+        Log.e(TAG, "player: "+ playerArrayList.get(playerCurrentPosition).getX()+ " " + playerArrayList.get(playerCurrentPosition).getY());
+        //Log.e(TAG, "legoCurrentPosition: "+ legoArrayList.get(legoCurrentPosition).getX()+ " " + legoArrayList.get(legoCurrentPosition).getY());
+        if(player.getX() == legoArrayList.get(legoCurrentPosition).getX() && player.getY() == legoArrayList.get(legoCurrentPosition).getY()){
+            Toast.makeText(getApplicationContext(), "HIT", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void legoGame() {
         random = new Random();
-        legoCurrentPosition = random.nextInt(screenHeightDividedByLegoSize*amountOfLegoColumn - 0);
-        Log.e(TAG, "legoGame: " + legoCurrentPosition);
-        lego = legoArrayList.get(legoCurrentPosition);
-        lego.setVisibility(View.VISIBLE);
-        //legoCurrentPosition++;
+        legoArrayList.get(legoCurrentPosition).setVisibility(View.INVISIBLE);
+        legoCurrentPosition++;// = random.nextInt(screenHeightDividedByLegoSize * amountOfLegoColumn - 0);
+        legoArrayList.get(legoCurrentPosition).setVisibility(View.VISIBLE);
+        checkHit();
     }
 
     private void tick() {
-        Log.e(TAG, "ticking");
+        //Log.e(TAG, "ticking");
     }
 }
