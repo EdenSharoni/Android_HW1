@@ -3,6 +3,7 @@ package com.example.android_hw;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -197,32 +198,27 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void tickEndlessly() {
-        new Thread(new Runnable() {
+        tick();
+        Handler mainLayout = new Handler();
+        mainLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    random = new Random();
-                    legoGame();
-                    tick();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException exception) {
-                        exception.printStackTrace();
-                    }
-                }
+                tickEndlessly();
+                legoGame();
             }
-        }).start();
+        }, 1000);
     }
 
     private void legoGame() {
-        //legoCurrentPosition = random.nextInt(2 - 0);
-        legoCurrentPosition++;
+        random = new Random();
+        legoCurrentPosition = random.nextInt(screenHeightDividedByLegoSize*amountOfLegoColumn - 0);
         Log.e(TAG, "legoGame: " + legoCurrentPosition);
         lego = legoArrayList.get(legoCurrentPosition);
         lego.setVisibility(View.VISIBLE);
+        //legoCurrentPosition++;
     }
 
     private void tick() {
-        Log.d(TAG, "ticking");
+        Log.e(TAG, "ticking");
     }
 }
