@@ -23,23 +23,17 @@ import java.util.Random;
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = GameActivity.class.getSimpleName();
     private FrameLayout frameLayoutManager;
-    private Drawable drawable;
-    private float height;
-    private float legoHeight;
-    private int screenHeightDividedByLegoSize;
-    private int amountOfLegoColumn = 5;
-    private ImageView lego;
-    private ImageView player;
     private LinearLayout linearLayout;
     private LinearLayout linearLayoutManager;
-    private Button button;
-    private int playerCurrentPosition;
-    private int legoCurrentPosition = 0;
+    private Drawable drawable;
+    private Random random;
     private ArrayList<ImageView> playerArrayList = new ArrayList<>();
     private ArrayList<ImageView> legoArrayList = new ArrayList<>();
+    private int playerCurrentPosition;
+    private int legoCurrentPosition = 0;
+    private int screenHeightDividedByLegoSize;
+    private int amountOfLegoColumn = 5;
     private int lives = 3;
-    private Random random;
-    private int numOfLego = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +62,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initLinearLayoutWithLegoBlocks() {
+        ImageView lego;
+
+
         linearLayoutManager = new LinearLayout(this);
         initLinearLayoutManager(linearLayoutManager);
 
@@ -90,6 +87,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initButton() {
+        Button button;
         linearLayoutManager = new LinearLayout(this);
         initLinearLayoutManager(linearLayoutManager);
 
@@ -109,6 +107,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initPlayer() {
+        ImageView player;
+
         playerCurrentPosition = amountOfLegoColumn / 2;
 
         linearLayoutManager = new LinearLayout(this);
@@ -122,16 +122,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             player = new ImageView(this);
             player.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             player.setBackground(getResources().getDrawable(R.drawable.player_lego));
-            player.setId(j);
             playerArrayList.add(player);
-            if (player.getId() == amountOfLegoColumn / 2)
-                player.setVisibility(View.VISIBLE);
-            else
-                player.setVisibility(View.INVISIBLE);
-
+            player.setVisibility(View.INVISIBLE);
             linearLayout.addView(player);
             linearLayoutManager.addView(linearLayout);
         }
+        playerArrayList.get(playerCurrentPosition).setVisibility(View.VISIBLE);
+        Log.e(TAG, "player: " + playerArrayList.get(playerCurrentPosition).getX() + " " + playerArrayList.get(playerCurrentPosition).getY());
         frameLayoutManager.addView(linearLayoutManager);
     }
 
@@ -158,8 +155,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void getScreenHeightDividedByLegoSize() {
-        height = Resources.getSystem().getDisplayMetrics().heightPixels;
-        legoHeight = getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight();
+        float height = Resources.getSystem().getDisplayMetrics().heightPixels;
+        float legoHeight = getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight();
         screenHeightDividedByLegoSize = Math.round(height / legoHeight);
     }
 
@@ -177,31 +174,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        player = playerArrayList.get(playerCurrentPosition);
         switch (v.getId()) {
             case 0: //left
                 if (playerCurrentPosition != 0) {
-                    player.setVisibility(View.INVISIBLE);
+                    playerArrayList.get(playerCurrentPosition).setVisibility(View.INVISIBLE);
                     playerCurrentPosition--;
-                    player = playerArrayList.get(playerCurrentPosition);
-                    player.setVisibility(View.VISIBLE);
+                    playerArrayList.get(playerCurrentPosition).setVisibility(View.VISIBLE);
                 }
                 break;
             case 1: //right
                 if (playerCurrentPosition != (amountOfLegoColumn - 1)) {
-                    player.setVisibility(View.INVISIBLE);
+                    playerArrayList.get(playerCurrentPosition).setVisibility(View.INVISIBLE);
                     playerCurrentPosition++;
-                    player = playerArrayList.get(playerCurrentPosition);
-                    player.setVisibility(View.VISIBLE);
+                    playerArrayList.get(playerCurrentPosition).setVisibility(View.VISIBLE);
                 }
                 break;
         }
-        Log.e(TAG, "playerCurrentPosition: "+ playerCurrentPosition);
-        Log.e(TAG, "player: "+ playerArrayList.get(playerCurrentPosition).getX()+ " " + playerArrayList.get(playerCurrentPosition).getY());
     }
 
     private void tickEndlessly() {
-        tick();
         Handler mainLayout = new Handler();
         mainLayout.postDelayed(new Runnable() {
             @Override
@@ -213,9 +204,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkHit() {
-        Log.e(TAG, "player: "+ playerArrayList.get(playerCurrentPosition).getX()+ " " + playerArrayList.get(playerCurrentPosition).getY());
-        //Log.e(TAG, "legoCurrentPosition: "+ legoArrayList.get(legoCurrentPosition).getX()+ " " + legoArrayList.get(legoCurrentPosition).getY());
-        if(player.getX() == legoArrayList.get(legoCurrentPosition).getX() && player.getY() == legoArrayList.get(legoCurrentPosition).getY()){
+        //Log.e(TAG, "player: " + playerArrayList.get(playerCurrentPosition).getX() + " " + playerArrayList.get(playerCurrentPosition).getY());
+        Log.e(TAG, "legoCurrentPosition: " + legoArrayList.get(legoCurrentPosition).getX() + " " + legoArrayList.get(legoCurrentPosition).getY());
+        if (playerArrayList.get(playerCurrentPosition).getX() == legoArrayList.get(legoCurrentPosition).getX() && playerArrayList.get(playerCurrentPosition).getY() == legoArrayList.get(legoCurrentPosition).getY()) {
             Toast.makeText(getApplicationContext(), "HIT", Toast.LENGTH_SHORT).show();
         }
     }
@@ -226,9 +217,5 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         legoCurrentPosition++;// = random.nextInt(screenHeightDividedByLegoSize * amountOfLegoColumn - 0);
         legoArrayList.get(legoCurrentPosition).setVisibility(View.VISIBLE);
         checkHit();
-    }
-
-    private void tick() {
-        //Log.e(TAG, "ticking");
     }
 }
