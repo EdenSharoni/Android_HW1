@@ -26,6 +26,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private FrameLayout frameLayoutManager;
     private LinearLayout linearLayout;
     private LinearLayout linearLayoutManager;
+    private TextView textView;
     private Drawable drawable;
     private Random random;
     private ArrayList<ImageView> playerArrayList = new ArrayList<>();
@@ -46,12 +47,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         initLinearLayoutWithLegoBlocks();
         initButton();
         initPlayer();
+
+        //test
+        legoArrayList.get(screenHeightDividedByLegoSize*0).setVisibility(View.VISIBLE);
+        legoArrayList.get(screenHeightDividedByLegoSize).setVisibility(View.VISIBLE);
+        legoArrayList.get(screenHeightDividedByLegoSize*2).setVisibility(View.VISIBLE);
+        legoArrayList.get(screenHeightDividedByLegoSize*3).setVisibility(View.VISIBLE);
+        legoArrayList.get(screenHeightDividedByLegoSize*4).setVisibility(View.VISIBLE);
+
         tickEndlessly();
         setContentView(frameLayoutManager);
     }
 
     private void initLives() {
-        TextView textView = new TextView(this);
+        textView = new TextView(this);
         textView.setText("Lives: " + lives);
         textView.setTextColor(Color.BLACK);
         textView.setTextSize(30f);
@@ -206,22 +215,38 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkHit() {
-        Log.e(TAG, "ticking");
         if (legoCurrentPosition / (screenHeightDividedByLegoSize) == playerCurrentPosition && legoCurrentPosition % (screenHeightDividedByLegoSize) == (screenHeightDividedByLegoSize - 1) && !hit) {
-            hit = true;
-            Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
-            startActivity(intent);
-            finish();
+            if (lives > 0) {
+                lives--;
+                textView.setText("Lives: " + lives);
+            } else {
+                hit = true;
+                Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
     }
 
     private void legoGame() {
+        Log.e(TAG, "ticking");
         checkHit();
         random = new Random();
         if (hit)
             return;
-        legoArrayList.get(legoCurrentPosition).setVisibility(View.INVISIBLE);
-        legoCurrentPosition++;// = random.nextInt(screenHeightDividedByLegoSize * amountOfLegoColumn - 0);
-        legoArrayList.get(legoCurrentPosition).setVisibility(View.VISIBLE);
+        //legoArrayList.get(legoCurrentPosition).setVisibility(View.INVISIBLE);
+        legoCurrentPosition = random.nextInt(amountOfLegoColumn - 0);
+
+        for (int i = 0; i < amountOfLegoColumn * screenHeightDividedByLegoSize; i++) {
+            if (legoArrayList.get(i).getVisibility() == View.VISIBLE) {
+                Log.e(TAG, "legoGame: " + i);
+                legoArrayList.get(i).setVisibility(View.INVISIBLE);
+                if(i != (amountOfLegoColumn * screenHeightDividedByLegoSize)-1)
+                legoArrayList.get(++i).setVisibility(View.VISIBLE);
+            }
+        }
+
+        //legoArrayList.get(legoCurrentPosition * screenHeightDividedByLegoSize).setVisibility(View.VISIBLE);
+        checkHit();
     }
 }
