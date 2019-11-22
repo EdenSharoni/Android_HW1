@@ -122,13 +122,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             player = new ImageView(this);
             player.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             player.setBackground(getResources().getDrawable(R.drawable.player_lego));
-            playerArrayList.add(player);
             player.setVisibility(View.INVISIBLE);
+            Log.e(TAG, "initPlayer: " + player.getX() + " " + player.getY());
+            playerArrayList.add(player);
+            Log.e(TAG, "playerArrayList: " + playerArrayList.get(j).getX() + " " + playerArrayList.get(j).getY());
             linearLayout.addView(player);
             linearLayoutManager.addView(linearLayout);
         }
         playerArrayList.get(playerCurrentPosition).setVisibility(View.VISIBLE);
-        Log.e(TAG, "player: " + playerArrayList.get(playerCurrentPosition).getX() + " " + playerArrayList.get(playerCurrentPosition).getY());
         frameLayoutManager.addView(linearLayoutManager);
     }
 
@@ -205,7 +206,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void checkHit() {
         //Log.e(TAG, "player: " + playerArrayList.get(playerCurrentPosition).getX() + " " + playerArrayList.get(playerCurrentPosition).getY());
-        Log.e(TAG, "legoCurrentPosition: " + legoArrayList.get(legoCurrentPosition).getX() + " " + legoArrayList.get(legoCurrentPosition).getY());
+        // Log.e(TAG, "legoCurrentPosition: " + legoArrayList.get(legoCurrentPosition).getX() + " " + legoArrayList.get(legoCurrentPosition).getY());
         if (playerArrayList.get(playerCurrentPosition).getX() == legoArrayList.get(legoCurrentPosition).getX() && playerArrayList.get(playerCurrentPosition).getY() == legoArrayList.get(legoCurrentPosition).getY()) {
             Toast.makeText(getApplicationContext(), "HIT", Toast.LENGTH_SHORT).show();
         }
