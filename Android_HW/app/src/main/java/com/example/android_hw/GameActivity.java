@@ -207,7 +207,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void checkHit() {
         Log.e(TAG, "ticking");
-        if (legoCurrentPosition / (screenHeightDividedByLegoSize) == playerCurrentPosition && legoCurrentPosition % (screenHeightDividedByLegoSize) == 6 && !hit) {
+        if (legoCurrentPosition / (screenHeightDividedByLegoSize) == playerCurrentPosition && legoCurrentPosition % (screenHeightDividedByLegoSize) == (screenHeightDividedByLegoSize - 1) && !hit) {
             hit = true;
             Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
             startActivity(intent);
