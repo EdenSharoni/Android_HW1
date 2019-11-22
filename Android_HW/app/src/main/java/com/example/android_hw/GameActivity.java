@@ -1,5 +1,6 @@
 package com.example.android_hw;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -34,6 +35,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private int screenHeightDividedByLegoSize;
     private int amountOfLegoColumn = 5;
     private int lives = 3;
+    private boolean hit = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,9 +125,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             player.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             player.setBackground(getResources().getDrawable(R.drawable.player_lego));
             player.setVisibility(View.INVISIBLE);
-            Log.e(TAG, "initPlayer: " + player.getX() + " " + player.getY());
             playerArrayList.add(player);
-            Log.e(TAG, "playerArrayList: " + playerArrayList.get(j).getX() + " " + playerArrayList.get(j).getY());
             linearLayout.addView(player);
             linearLayoutManager.addView(linearLayout);
         }
@@ -198,25 +198,30 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mainLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
-                tickEndlessly();
+                if (!hit)
+                    tickEndlessly();
                 legoGame();
             }
         }, 1000);
     }
 
     private void checkHit() {
-        //Log.e(TAG, "player: " + playerArrayList.get(playerCurrentPosition).getX() + " " + playerArrayList.get(playerCurrentPosition).getY());
-        // Log.e(TAG, "legoCurrentPosition: " + legoArrayList.get(legoCurrentPosition).getX() + " " + legoArrayList.get(legoCurrentPosition).getY());
-        if (playerArrayList.get(playerCurrentPosition).getX() == legoArrayList.get(legoCurrentPosition).getX() && playerArrayList.get(playerCurrentPosition).getY() == legoArrayList.get(legoCurrentPosition).getY()) {
-            Toast.makeText(getApplicationContext(), "HIT", Toast.LENGTH_SHORT).show();
+        Log.e(TAG, "ticking");
+        if (legoCurrentPosition / (screenHeightDividedByLegoSize) == playerCurrentPosition && legoCurrentPosition % (screenHeightDividedByLegoSize) == 6 && !hit) {
+            hit = true;
+            Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 
     private void legoGame() {
+        checkHit();
         random = new Random();
+        if (hit)
+            return;
         legoArrayList.get(legoCurrentPosition).setVisibility(View.INVISIBLE);
         legoCurrentPosition++;// = random.nextInt(screenHeightDividedByLegoSize * amountOfLegoColumn - 0);
         legoArrayList.get(legoCurrentPosition).setVisibility(View.VISIBLE);
-        checkHit();
     }
 }
