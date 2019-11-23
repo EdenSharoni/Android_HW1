@@ -255,8 +255,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         checkHit();
         random = new Random();
-        if (hit)
-            return;
+        //if (hit)
+            //return;
         legoCurrentPosition = random.nextInt(amountOfLegoColumn - 0);
 
         /*if (legoCheck != legoCurrentPosition)
