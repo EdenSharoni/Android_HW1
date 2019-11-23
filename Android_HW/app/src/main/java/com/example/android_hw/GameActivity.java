@@ -1,11 +1,14 @@
 package com.example.android_hw;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,27 +36,33 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<ImageView> legoArrayList = new ArrayList<>();
     private int playerCurrentPosition;
     private int legoCurrentPosition = 0;
+    private int legoCheck = -1;
     private int screenHeightDividedByLegoSize;
-    private int amountOfLegoColumn = 5;
+    private int amountOfLegoColumn = 3;
     private int lives = 3;
     private boolean hit = false;
+    private Vibrator vibe;
+    private int highestScore = 0;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         getScreenHeightDividedByLegoSize();
         initFrameLayoutManager();
-        initLives();
         initLinearLayoutWithLegoBlocks();
         initButton();
         initPlayer();
+        initLives();
 
         //test
-        legoArrayList.get(screenHeightDividedByLegoSize*0).setVisibility(View.VISIBLE);
+        /*legoArrayList.get(screenHeightDividedByLegoSize*0).setVisibility(View.VISIBLE);
         legoArrayList.get(screenHeightDividedByLegoSize).setVisibility(View.VISIBLE);
         legoArrayList.get(screenHeightDividedByLegoSize*2).setVisibility(View.VISIBLE);
         legoArrayList.get(screenHeightDividedByLegoSize*3).setVisibility(View.VISIBLE);
-        legoArrayList.get(screenHeightDividedByLegoSize*4).setVisibility(View.VISIBLE);
+        legoArrayList.get(screenHeightDividedByLegoSize*4).setVisibility(View.VISIBLE);*/
 
         tickEndlessly();
         setContentView(frameLayoutManager);
@@ -215,38 +224,68 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkHit() {
-        if (legoCurrentPosition / (screenHeightDividedByLegoSize) == playerCurrentPosition && legoCurrentPosition % (screenHeightDividedByLegoSize) == (screenHeightDividedByLegoSize - 1) && !hit) {
-            if (lives > 0) {
-                lives--;
-                textView.setText("Lives: " + lives);
-            } else {
-                hit = true;
-                Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
-                startActivity(intent);
-                finish();
+
+        for (int i = 0; i < amountOfLegoColumn * screenHeightDividedByLegoSize; i++) {
+            if (legoArrayList.get(i).getVisibility() == View.VISIBLE && i / (screenHeightDividedByLegoSize) == playerCurrentPosition && i % (screenHeightDividedByLegoSize) == (screenHeightDividedByLegoSize - 1) && !hit) {
+                vibe.vibrate(1000);
+                if (lives > 0) {
+                    lives--;
+                    textView.setText("Lives: " + lives);
+                    legoArrayList.get(i).setVisibility(View.INVISIBLE);
+                } else {
+                    hit = true;
+
+                    pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+                    editor = pref.edit();
+                    if (pref.getInt("highestScore", -1) < highestScore) {
+                        editor.putInt("highestScore", highestScore);
+                        editor.commit();
+                    }
+
+                    Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         }
     }
 
     private void legoGame() {
-        Log.e(TAG, "ticking");
+
         checkHit();
         random = new Random();
         if (hit)
             return;
-        //legoArrayList.get(legoCurrentPosition).setVisibility(View.INVISIBLE);
         legoCurrentPosition = random.nextInt(amountOfLegoColumn - 0);
 
+        /*if (legoCheck != legoCurrentPosition)
+            legoCheck = legoCurrentPosition;
+        else {
+            if (legoCurrentPosition == (amountOfLegoColumn - 1))
+                legoCurrentPosition--;
+            else
+                legoCurrentPosition++;
+            legoCheck = legoCurrentPosition;
+        }*/
+
+        legoArrayList.get(legoCurrentPosition * screenHeightDividedByLegoSize).setVisibility(View.VISIBLE);
+
         for (int i = 0; i < amountOfLegoColumn * screenHeightDividedByLegoSize; i++) {
+
+            if (i == legoCurrentPosition * screenHeightDividedByLegoSize) {
+                continue;
+            }
+
             if (legoArrayList.get(i).getVisibility() == View.VISIBLE) {
-                Log.e(TAG, "legoGame: " + i);
                 legoArrayList.get(i).setVisibility(View.INVISIBLE);
-                if(i != (amountOfLegoColumn * screenHeightDividedByLegoSize)-1)
-                legoArrayList.get(++i).setVisibility(View.VISIBLE);
+                if (i % (screenHeightDividedByLegoSize) == (screenHeightDividedByLegoSize - 1)) {
+                    highestScore++;
+                    continue;
+                }
+                if (i != (amountOfLegoColumn * screenHeightDividedByLegoSize) - 1)
+                    legoArrayList.get(++i).setVisibility(View.VISIBLE);
             }
         }
-
-        //legoArrayList.get(legoCurrentPosition * screenHeightDividedByLegoSize).setVisibility(View.VISIBLE);
         checkHit();
     }
 }
