@@ -38,13 +38,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private int legoCurrentPosition = 0;
     private int legoCheck = -1;
     private int screenHeightDividedByLegoSize;
-    private int amountOfLegoColumn = 3;
+    private int amountOfLegoColumn = 5;
     private int lives = 3;
     private boolean hit = false;
     private Vibrator vibe;
     private int highestScore = 0;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private int delayMillis = 500;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -220,7 +221,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     tickEndlessly();
                 legoGame();
             }
-        }, 1000);
+        }, delayMillis);
     }
 
     private void checkHit() {
@@ -287,5 +288,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         checkHit();
+        delayMillis--;
     }
 }
