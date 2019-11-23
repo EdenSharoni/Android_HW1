@@ -57,14 +57,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         initButton();
         initPlayer();
         initLives();
-
-        //test
-        /*legoArrayList.get(screenHeightDividedByLegoSize*0).setVisibility(View.VISIBLE);
-        legoArrayList.get(screenHeightDividedByLegoSize).setVisibility(View.VISIBLE);
-        legoArrayList.get(screenHeightDividedByLegoSize*2).setVisibility(View.VISIBLE);
-        legoArrayList.get(screenHeightDividedByLegoSize*3).setVisibility(View.VISIBLE);
-        legoArrayList.get(screenHeightDividedByLegoSize*4).setVisibility(View.VISIBLE);*/
-
         tickEndlessly();
         setContentView(frameLayoutManager);
     }
@@ -256,10 +248,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         checkHit();
         random = new Random();
         //if (hit)
-            //return;
+        //return;
         legoCurrentPosition = random.nextInt(amountOfLegoColumn - 0);
 
-        /*if (legoCheck != legoCurrentPosition)
+        if (legoCheck != legoCurrentPosition)
             legoCheck = legoCurrentPosition;
         else {
             if (legoCurrentPosition == (amountOfLegoColumn - 1))
@@ -267,7 +259,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             else
                 legoCurrentPosition++;
             legoCheck = legoCurrentPosition;
-        }*/
+        }
 
         legoArrayList.get(legoCurrentPosition * screenHeightDividedByLegoSize).setVisibility(View.VISIBLE);
 
