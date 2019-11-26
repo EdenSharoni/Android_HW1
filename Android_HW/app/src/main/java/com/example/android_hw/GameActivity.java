@@ -7,11 +7,9 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -29,7 +26,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private FrameLayout frameLayoutManager;
     private LinearLayout linearLayout;
     private LinearLayout linearLayoutManager;
-    private TextView textView;
+    private TextView liveText;
+    private TextView scoreText;
     private Drawable drawable;
     private Random random;
     private ArrayList<ImageView> playerArrayList = new ArrayList<>();
@@ -57,16 +55,26 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         initButton();
         initPlayer();
         initLives();
+        initScore();
         tickEndlessly();
         setContentView(frameLayoutManager);
     }
 
+    private void initScore() {
+        scoreText = new TextView(this);
+        scoreText.setText("Score: " + highestScore);
+        scoreText.setTextColor(Color.BLACK);
+        scoreText.setTextSize(30f);
+        //TODO layout Gravity
+        frameLayoutManager.addView(scoreText);
+    }
+
     private void initLives() {
-        textView = new TextView(this);
-        textView.setText("Lives: " + lives);
-        textView.setTextColor(Color.BLACK);
-        textView.setTextSize(30f);
-        frameLayoutManager.addView(textView);
+        liveText = new TextView(this);
+        liveText.setText("Lives: " + lives);
+        liveText.setTextColor(Color.BLACK);
+        liveText.setTextSize(30f);
+        frameLayoutManager.addView(liveText);
     }
 
     private void initFrameLayoutManager() {
@@ -229,7 +237,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 vibe.vibrate(1000);
                 if (lives > 0) {
                     lives--;
-                    textView.setText("Lives: " + lives);
+                    liveText.setText("Lives: " + lives);
                     legoArrayList.get(i).setVisibility(View.INVISIBLE);
                 } else {
                     hit = true;
@@ -286,6 +294,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         checkHit();
-        delayMillis--;
+        --delayMillis;
     }
 }

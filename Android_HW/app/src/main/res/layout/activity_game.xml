@@ -7,13 +7,6 @@
     android:background="@drawable/background_lego"
     tools:context=".GameActivity">
 
-    <!--<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ssss"
-        android:textColor="@color/black"
-        android:textSize="30dp" />-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -78,7 +71,7 @@
     </LinearLayout>
 
 
-    <!--<LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -149,5 +142,23 @@
                 android:background="@drawable/player_lego" />
         </LinearLayout>
 
-    </LinearLayout>-->
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Life: 3"
+        android:textColor="@color/black"
+        android:textSize="30dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:paddingTop="100dp"
+        android:text="Score: "
+        android:textColor="@color/black"
+        android:textSize="30dp" />
+
+
 </FrameLayout>
