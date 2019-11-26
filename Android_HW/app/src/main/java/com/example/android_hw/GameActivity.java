@@ -146,7 +146,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setColor() {
         random = new Random();
-        int i = random.nextInt(5 - 0);
+        int i = random.nextInt(7 - 0);
         switch (i) {
             case 0:
                 drawable = getResources().getDrawable(R.drawable.blue_lego);
@@ -162,6 +162,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case 4:
                 drawable = getResources().getDrawable(R.drawable.pink_lego);
+                break;
+            case 5:
+                drawable = getResources().getDrawable(R.drawable.orange_lego);
+                break;
+            case 6:
+                drawable = getResources().getDrawable(R.drawable.purple_lego);
                 break;
         }
     }
