@@ -1,11 +1,17 @@
 package com.example.android_hw;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -29,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         help.setOnClickListener(this);
         exit.setOnClickListener(this);
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
     }
 
     @Override
