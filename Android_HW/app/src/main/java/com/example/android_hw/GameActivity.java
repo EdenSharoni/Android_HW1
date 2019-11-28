@@ -45,8 +45,8 @@ public class GameActivity extends AppCompatActivity {
     private int highestScore = 0;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private int delayMillis = 800;
-    private int legoFallDelayMillis = 900;
+    private int delayMillis = 1000;
+    private int legoFallDelayMillis = 500;
     private ObjectAnimator animY;
     private ObjectAnimator scoreAnimation;
     private ImageView lego;
@@ -192,9 +192,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void checkHit() {
-        for (int i = 0; i < legoArrayList.size(); i++) {
+        for (int i = 0; i < 1; i++) {
             int[] location = new int[2];
-            legoArrayList.get(i).getLocationOnScreen(location);
+            lego.getLocationOnScreen(location);
 
             if ((location[0] > player.getX() && location[0] < player.getX() + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth()) || (location[0] < player.getX() && location[0] + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth() > player.getX())) {
                 vibe.vibrate(1000);
@@ -269,31 +269,6 @@ public class GameActivity extends AppCompatActivity {
                 setColor();
                 lego.setBackground(drawable);
                 legoArrayList.add(lego);
-                animY = ObjectAnimator.ofFloat(lego, "Y", 0f, screenHeight);
-                animY.setInterpolator(new AccelerateInterpolator());
-                animY.setDuration(legoFallDelayMillis);
-                animY.start();
-                animY.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        checkHit();
-                        legoArrayList.remove(animation);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
                 linearLayout.addView(lego);
             }
             linearLayoutManager.addView(linearLayout);
@@ -302,6 +277,31 @@ public class GameActivity extends AppCompatActivity {
 
         frameLayoutManager.addView(linearLayoutManager);
 
+        animY = ObjectAnimator.ofFloat(lego, "Y", 0f, screenHeight);
+        animY.setInterpolator(new AccelerateInterpolator());
+        animY.setDuration(legoFallDelayMillis);
+        animY.start();
+        animY.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                checkHit();
+                legoArrayList.remove(animation);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
 
     }
 }
