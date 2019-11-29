@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -46,7 +45,7 @@ public class GameActivity extends AppCompatActivity {
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private int delayMillis = 500;
-    private int legoFallDelayMillis = 900;
+    private int legoFallDelayMillis = 800;
     private ObjectAnimator animY;
     private ObjectAnimator scoreAnimation;
     private ImageView lego;
@@ -59,9 +58,8 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         playMusic();
+        init();
         getScreenHeightAndLegoHeight();
         initFrameLayoutManager();
         initPlayer();
@@ -71,6 +69,11 @@ public class GameActivity extends AppCompatActivity {
         setContentView(frameLayoutManager);
     }
 
+    private void init() {
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    }
+
     private void getScreenHeightAndLegoHeight() {
         screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
         legoHeight = getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight();
@@ -78,18 +81,8 @@ public class GameActivity extends AppCompatActivity {
 
     private void playMusic() {
         mediaPlayer = MediaPlayer.create(this, R.raw.music);
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mediaPlayer.start();
-            }
-        });
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mediaPlayer.release();
-            }
-        });
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     private void initScore() {
@@ -192,6 +185,7 @@ public class GameActivity extends AppCompatActivity {
         }, delayMillis);
     }
 
+
     private void checkHit() {
         int[] location = new int[2];
         legoArrayList.get(0).getLocationOnScreen(location);
@@ -227,6 +221,7 @@ public class GameActivity extends AppCompatActivity {
             }
             if (delayMillis > 300) {
                 --delayMillis;
+                Log.e(TAG, "delayMillis: " + delayMillis);
             }
         }
     }
@@ -235,7 +230,6 @@ public class GameActivity extends AppCompatActivity {
         random = new Random();
         if (die)
             return;
-
         legoCurrentPosition = random.nextInt(amountOfLegoColumn - 0);
 
         linearLayoutManager = new LinearLayout(this);
@@ -285,6 +279,5 @@ public class GameActivity extends AppCompatActivity {
 
             }
         });
-
     }
 }
