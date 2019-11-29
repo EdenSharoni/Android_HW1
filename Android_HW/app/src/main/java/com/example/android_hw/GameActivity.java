@@ -45,8 +45,8 @@ public class GameActivity extends AppCompatActivity {
     private int highestScore = 0;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private int delayMillis = 1000;
-    private int legoFallDelayMillis = 500;
+    private int delayMillis = 500;
+    private int legoFallDelayMillis = 900;
     private ObjectAnimator animY;
     private ObjectAnimator scoreAnimation;
     private ImageView lego;
@@ -192,58 +192,38 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void checkHit() {
-        for (int i = 0; i < 1; i++) {
-            int[] location = new int[2];
-            lego.getLocationOnScreen(location);
+        int[] location = new int[2];
+        legoArrayList.get(0).getLocationOnScreen(location);
 
-            if ((location[0] > player.getX() && location[0] < player.getX() + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth()) || (location[0] < player.getX() && location[0] + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth() > player.getX())) {
-                vibe.vibrate(1000);
-                if (lives > 0) {
-                    lives--;
-                    liveText.setText("Lives: " + (lives + 1));
-                    lego.setVisibility(View.INVISIBLE);
-                } else {
-                    die = true;
-                    editor = pref.edit();
-                    if (pref.getInt("highestScore", -1) < highestScore) {
-                        editor.putInt("highestScore", highestScore);
-                        editor.commit();
-                    }
-                    mediaPlayer.stop();
-                    Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+        if ((location[0] > player.getX() && location[0] < player.getX() + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth()) || (location[0] < player.getX() && location[0] + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth() > player.getX()) && !die) {
+            vibe.vibrate(1000);
+            if (lives > 0) {
+                --lives;
+                liveText.setText("Lives: " + (lives + 1));
+                legoArrayList.get(0).setVisibility(View.INVISIBLE);
             } else {
-                ++highestScore;
-                scoreText.setText("Score: " + highestScore);
-                legoFallDelayMillis -= 2;
-                if (highestScore % 10 == 0) {
-                    scoreAnimation.start();
-                    scoreAnimation.addListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    });
+                die = true;
+                editor = pref.edit();
+                if (pref.getInt("highestScore", -1) < highestScore) {
+                    editor.putInt("highestScore", highestScore);
+                    editor.commit();
                 }
-                if (pref.getInt("highestScore", -1) < highestScore && pref.getInt("highestScore", -1) > 0)
-                    scoreText.setTextColor(Color.RED);
+                mediaPlayer.stop();
+                Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        } else {
+            ++highestScore;
+            scoreText.setText("Score: " + highestScore);
+            legoFallDelayMillis -= 2;
+            if (highestScore % 10 == 0) {
+                scoreAnimation.start();
+            }
+            if (pref.getInt("highestScore", -1) < highestScore && pref.getInt("highestScore", -1) > 0)
+                scoreText.setTextColor(Color.RED);
+            if (delayMillis > 300) {
+                --delayMillis;
             }
         }
     }
@@ -289,7 +269,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 checkHit();
-                legoArrayList.remove(animation);
+                legoArrayList.remove(0);
             }
 
             @Override
