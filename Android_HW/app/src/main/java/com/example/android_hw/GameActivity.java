@@ -54,6 +54,7 @@ public class GameActivity extends AppCompatActivity {
     private float legoHeight;
     private float screenHeight;
     private ArrayList<ImageView> legoArrayList = new ArrayList<>();
+    private String score = "Score: ";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +94,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void initScore() {
         scoreText = new TextView(this);
-        scoreText.setText("Score: " + highestScore);
+        scoreText.setText(score + highestScore);
         scoreText.setTextColor(Color.BLACK);
         scoreText.setTextSize(30f);
         scoreText.setGravity(Gravity.CENTER | Gravity.TOP);
@@ -196,13 +197,14 @@ public class GameActivity extends AppCompatActivity {
         legoArrayList.get(0).getLocationOnScreen(location);
 
         if ((location[0] > player.getX() && location[0] < player.getX() + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth()) || (location[0] < player.getX() && location[0] + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth() > player.getX()) && !die) {
-            vibe.vibrate(1000);
+            die = true;
+            vibe.vibrate(500);
             if (lives > 0) {
+                die = false;
                 --lives;
                 liveText.setText("Lives: " + (lives + 1));
                 legoArrayList.get(0).setVisibility(View.INVISIBLE);
             } else {
-                die = true;
                 editor = pref.edit();
                 if (pref.getInt("highestScore", -1) < highestScore) {
                     editor.putInt("highestScore", highestScore);
@@ -215,13 +217,14 @@ public class GameActivity extends AppCompatActivity {
             }
         } else {
             ++highestScore;
-            scoreText.setText("Score: " + highestScore);
-            legoFallDelayMillis -= 2;
+            scoreText.setText(score + highestScore);
             if (highestScore % 10 == 0) {
                 scoreAnimation.start();
             }
-            if (pref.getInt("highestScore", -1) < highestScore && pref.getInt("highestScore", -1) > 0)
+            if (pref.getInt("highestScore", -1) < highestScore && pref.getInt("highestScore", -1) > 0) {
+                score = "Highest Score: ";
                 scoreText.setTextColor(Color.RED);
+            }
             if (delayMillis > 300) {
                 --delayMillis;
             }
