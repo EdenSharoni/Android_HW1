@@ -44,8 +44,8 @@ public class GameActivity extends AppCompatActivity {
     private int highestScore = 0;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private int delayMillis = 500;
-    private int legoFallDelayMillis = 800;
+    private int delayMillis = 400;
+    private int legoFallDelayMillis = 700;
     private ObjectAnimator animY;
     private ObjectAnimator scoreAnimation;
     private ImageView lego;
@@ -192,10 +192,10 @@ public class GameActivity extends AppCompatActivity {
 
         if ((location[0] > player.getX() && location[0] < player.getX() + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth()) || (location[0] < player.getX() && location[0] + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth() > player.getX()) && !die) {
             die = true;
-            vibe.vibrate(500);
+            //vibe.vibrate(500);
             if (lives > 0) {
                 die = false;
-                --lives;
+                //--lives;
                 liveText.setText("Lives: " + (lives + 1));
                 legoArrayList.get(0).setVisibility(View.INVISIBLE);
             } else {
@@ -214,14 +214,12 @@ public class GameActivity extends AppCompatActivity {
             scoreText.setText(score + highestScore);
             if (highestScore % 10 == 0) {
                 scoreAnimation.start();
+                if (delayMillis > 200)
+                    delayMillis -= 10;
             }
             if (pref.getInt("highestScore", -1) < highestScore && pref.getInt("highestScore", -1) > 0) {
                 score = "Highest Score: ";
                 scoreText.setTextColor(Color.RED);
-            }
-            if (delayMillis > 300) {
-                --delayMillis;
-                Log.e(TAG, "delayMillis: " + delayMillis);
             }
         }
     }
@@ -255,7 +253,6 @@ public class GameActivity extends AppCompatActivity {
         frameLayoutManager.addView(linearLayoutManager);
 
         animY = ObjectAnimator.ofFloat(lego, "Y", 0f, screenHeight);
-        animY.setInterpolator(new AccelerateInterpolator());
         animY.setDuration(legoFallDelayMillis);
         animY.start();
         animY.addListener(new Animator.AnimatorListener() {
