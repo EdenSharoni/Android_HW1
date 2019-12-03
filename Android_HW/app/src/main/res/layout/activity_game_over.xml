@@ -14,12 +14,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/game_over" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/eden_sharoni" />
-
     <TextView
         android:id="@+id/score"
         android:layout_width="wrap_content"

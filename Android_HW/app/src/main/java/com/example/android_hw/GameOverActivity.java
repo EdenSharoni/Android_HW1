@@ -24,7 +24,7 @@ public class GameOverActivity extends AppCompatActivity implements View.OnClickL
         ButterKnife.bind(this);
         TextView highestScoreText = findViewById(R.id.score);
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-        highestScoreText.setText(String.format("Highest Score: %d", pref.getInt("highestScore", -1)));
+        highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, pref.getInt("highestScore", -1))));
     }
 
     @Override
