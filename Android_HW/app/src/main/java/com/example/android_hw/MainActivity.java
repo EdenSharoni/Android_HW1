@@ -1,48 +1,34 @@
 package com.example.android_hw;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final String TAG = "MainActivity";
-    private ImageView play;
-    private ImageView help;
-    private ImageView exit;
-    private Intent intent;
-    private Vibrator vibe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        play = findViewById(R.id.playBtn);
-        help = findViewById(R.id.helpBtn);
-        exit = findViewById(R.id.exitBtn);
-        play.setOnClickListener(this);
-        help.setOnClickListener(this);
-        exit.setOnClickListener(this);
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        ButterKnife.bind(this);
     }
 
     @Override
+    @OnClick({R.id.playBtn, R.id.helpBtn, R.id.exitBtn})
     public void onClick(View v) {
-        vibe.vibrate(20);
+        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(20);
         switch (v.getId()) {
             case R.id.playBtn:
-                intent = new Intent(getApplicationContext(), GameActivity.class);
+                Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                 startActivity(intent);
                 finish();
                 break;

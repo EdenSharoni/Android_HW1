@@ -1,29 +1,29 @@
 package com.example.android_hw;
 
 import android.content.Context;
-import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.ImageView;
 
-public class HelpActivity extends AppCompatActivity implements View.OnClickListener {
+import androidx.appcompat.app.AppCompatActivity;
 
-    private ImageView back;
-    private Vibrator vibe;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class HelpActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
-        back = findViewById(R.id.backBtn);
-        back.setOnClickListener(this);
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        ButterKnife.bind(this);
     }
 
     @Override
+    @OnClick(R.id.backBtn)
     public void onClick(View v) {
-        vibe.vibrate(20);
+        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(20);
         finish();
     }
 }
