@@ -47,8 +47,11 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        //set highest score to 0
+        //pref.edit().putInt("highestScore", 0).apply();
+
         playMusic();
-        init();
         getScreenHeightAndLegoHeight();
         initFrameLayoutManager();
         initPlayer();
@@ -56,12 +59,6 @@ public class GameActivity extends AppCompatActivity {
         initScore();
         tickEndlessly();
         setContentView(frameLayoutManager);
-    }
-
-    private void init() {
-
-        //pref.edit().putInt("highestScore", 4);
-        //pref.edit().apply();
     }
 
     private void getScreenHeightAndLegoHeight() {
@@ -190,10 +187,8 @@ public class GameActivity extends AppCompatActivity {
                 liveText.setText(getString(R.string.lives, (lives + 1)));
                 legoArrayList.get(0).setVisibility(View.INVISIBLE);
             } else {
-                if (pref.getInt("highestScore", -1) < highestScore) {
-                    pref.edit().putInt("highestScore", highestScore);
-                    pref.edit().apply();
-                }
+                if (pref.getInt("highestScore", -1) < highestScore)
+                    pref.edit().putInt("highestScore", highestScore).apply();
                 mediaPlayer.stop();
                 if (die) {
                     Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
