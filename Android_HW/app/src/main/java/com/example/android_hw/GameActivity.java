@@ -2,6 +2,7 @@ package com.example.android_hw;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -10,6 +11,8 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -175,17 +178,15 @@ public class GameActivity extends AppCompatActivity {
 
     private void checkHit() {
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-        int[] location = new int[2];
-        legoArrayList.get(0).getLocationOnScreen(location);
 
-        if ((location[0] > player.getX() && location[0] < player.getX() + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth()) || (location[0] < player.getX() && location[0] + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth() > player.getX()) && !die) {
+
+        if (checkValidity()) {
             die = true;
-            //((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
+            ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
             if (lives > 0) {
                 die = false;
                 --lives;
                 liveText.setText(getString(R.string.lives, (lives + 1)));
-                legoArrayList.get(0).setVisibility(View.INVISIBLE);
             } else {
                 if (pref.getInt("highestScore", -1) < highestScore)
                     pref.edit().putInt("highestScore", highestScore).apply();
@@ -210,6 +211,19 @@ public class GameActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    private boolean checkValidity() {
+        int[] location = new int[2];
+        legoArrayList.get(0).getLocationOnScreen(location);
+        if (die)
+            return false;
+        if ((location[0] > player.getX() && location[0] < player.getX() + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth()))
+            return true;
+        if ((location[0] < player.getX() && location[0] + getResources().getDrawable(R.drawable.black_lego).getMinimumWidth() > player.getX()))
+            return true;
+        else
+            return false;
     }
 
 
@@ -243,7 +257,7 @@ public class GameActivity extends AppCompatActivity {
 
         frameLayoutManager.addView(linearLayoutManager);
 
-        ObjectAnimator animY = ObjectAnimator.ofFloat(lego, "Y", 0f, screenHeight);
+        ObjectAnimator animY = ObjectAnimator.ofFloat(lego, "Y", 0f, screenHeight - getResources().getDrawable(R.drawable.player_lego).getMinimumHeight());
         int legoFallDelayMillis = 700;
         animY.setDuration(legoFallDelayMillis);
         animY.start();
@@ -254,8 +268,36 @@ public class GameActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                Log.e(TAG, "animation1: " + animation);
                 checkHit();
-                legoArrayList.remove(0);
+                int[] location = new int[2];
+                legoArrayList.get(0).getLocationOnScreen(location);
+                ObjectAnimator endAnimY = ObjectAnimator.ofFloat(legoArrayList.get(0), "Y", screenHeight - getResources().getDrawable(R.drawable.player_lego).getMinimumHeight(), screenHeight);
+                endAnimY.setDuration(100);
+                endAnimY.start();
+                endAnimY.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        checkHit();
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        Log.e(TAG, "animation2: " + animation);
+                        legoArrayList.get(0).setVisibility(View.GONE);
+                        legoArrayList.remove(0);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
             }
 
             @Override
