@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android_HW</string>
+    <string name="app_name">Escape the Fall</string>
     <string name="lives">Lives: %d</string>
     <string name="score"> Score: %d</string>
     <string name="highest">Highest</string>
