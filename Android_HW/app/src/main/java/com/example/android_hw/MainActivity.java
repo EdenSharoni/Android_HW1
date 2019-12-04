@@ -20,6 +20,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        /*set highest score to 0
+        getApplicationContext().getSharedPreferences("MyPref", 0).edit().putInt("highestScore", 0).apply();*/
     }
 
     @Override
