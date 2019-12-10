@@ -1,3 +1,0 @@
-hit doesn't work 100%
-1 lego in row
-highestScore doesnt restore
