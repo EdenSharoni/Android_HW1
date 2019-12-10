@@ -3,4 +3,6 @@
     <string name="lives">Lives: %d</string>
     <string name="score"> Score: %d</string>
     <string name="highest">Highest</string>
+    <string name="MyPref">MyPref</string>
+    <string name="highestScore">highestScore</string>
 </resources>

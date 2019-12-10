@@ -23,8 +23,8 @@ public class GameOverActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_game_over);
         ButterKnife.bind(this);
         TextView highestScoreText = findViewById(R.id.score);
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-        highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, pref.getInt("highestScore", -1))));
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
+        highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, pref.getInt(getString(R.string.highestScore), -1))));
     }
 
     @Override

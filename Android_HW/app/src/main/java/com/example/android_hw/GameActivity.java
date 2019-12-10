@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,7 +41,8 @@ public class GameActivity extends AppCompatActivity {
     private TextView scoreText;
     private Drawable drawable;
     private Random random;
-    private boolean die = false;
+    private boolean isDead = false;
+    private boolean pauseIsGame = false;
     private int highestScore = 0;
     private int delayMillis = 400;
     private int lives = 2;
@@ -58,7 +60,6 @@ public class GameActivity extends AppCompatActivity {
         initPlayer();
         initLives();
         initScore();
-        tickEndlessly();
         setContentView(frameLayoutManager);
     }
 
@@ -154,18 +155,21 @@ public class GameActivity extends AppCompatActivity {
         mainLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (!die)
+                if (!isDead && !pauseIsGame) {
                     tickEndlessly();
+                }
                 legoGame();
             }
         }, delayMillis);
     }
 
     private void legoGame() {
+        Log.e(TAG, "legoGame: ");
+
         //Dynamic - Can be Changed
         int amountOfLegoColumn = 5;
         random = new Random();
-        if (die)
+        if (isDead)
             return;
 
         int legoCurrentPosition = random.nextInt(amountOfLegoColumn);
@@ -246,21 +250,22 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void checkHit() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
 
 
         if (checkValidity()) {
-            die = true;
+            isDead = true;
             ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
             if (lives > 0) {
-                die = false;
+                isDead = false;
                 --lives;
                 liveText.setText(getString(R.string.lives, (lives + 1)));
             } else {
-                if (pref.getInt("highestScore", -1) < highestScore)
-                    pref.edit().putInt("highestScore", highestScore).apply();
+                if (pref.getInt(getString(R.string.highestScore), -1) < highestScore) {
+                    pref.edit().putInt(getString(R.string.highestScore), highestScore).apply();
+                }
                 mediaPlayer.stop();
-                if (die) {
+                if (isDead) {
                     Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
                     startActivity(intent);
                     finish();
@@ -268,15 +273,16 @@ public class GameActivity extends AppCompatActivity {
             }
         } else {
             ++highestScore;
-            if (pref.getInt("highestScore", -1) < highestScore && pref.getInt("highestScore", -1) > 0) {
+            if (pref.getInt(getString(R.string.highestScore), -1) < highestScore && pref.getInt(getString(R.string.highestScore), -1) > 0) {
                 scoreText.setTextColor(Color.RED);
                 scoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, highestScore)));
             } else
                 scoreText.setText(getString(R.string.score, highestScore));
             if (highestScore % 10 == 0) {
                 scoreAnimation.start();
-                if (delayMillis > 200)
+                if (delayMillis > 200) {
                     delayMillis -= 10;
+                }
             }
 
         }
@@ -285,7 +291,7 @@ public class GameActivity extends AppCompatActivity {
     private boolean checkValidity() {
         int[] location = new int[2];
         legoArrayList.get(0).getLocationOnScreen(location);
-        if (die)
+        if (isDead)
             return false;
         if ((location[0] > player.getX() && location[0] < player.getX() + legoWidth))
             return true;
@@ -302,5 +308,20 @@ public class GameActivity extends AppCompatActivity {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER | Gravity.TOP);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
+    }
+
+    @Override
+    protected void onStop() {
+        pauseIsGame = true;
+        mediaPlayer.pause();
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        pauseIsGame = false;
+        mediaPlayer.start();
+        tickEndlessly();
+        super.onResume();
     }
 }
