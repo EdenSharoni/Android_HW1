@@ -282,9 +282,6 @@ public class GameActivity extends AppCompatActivity implements ValueAnimator.Ani
         SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
 
         if (checkValidity()) {
-            //if (hitSuperHead()) {
-
-           // }
             isDead = true;
             ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
             if (lives > 0) {
@@ -317,30 +314,6 @@ public class GameActivity extends AppCompatActivity implements ValueAnimator.Ani
             }
 
         }
-    }
-
-    private boolean hitSuperHead() {
-        Drawable drawable1 = legoArrayList.get(0).getDrawable();
-
-        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player1))
-            return true;
-        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player2))
-            return true;
-        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player3))
-            return true;
-        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player4))
-            return true;
-        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player5))
-            return true;
-        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player6))
-            return true;
-        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player7))
-            return true;
-        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player8))
-            return true;
-        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player9))
-            return true;
-        return false;
     }
 
     private boolean checkValidity() {
