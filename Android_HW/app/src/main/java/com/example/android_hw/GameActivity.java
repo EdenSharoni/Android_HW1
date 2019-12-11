@@ -2,6 +2,7 @@ package com.example.android_hw;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,7 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements ValueAnimator.AnimatorUpdateListener {
 
     private static final String TAG = GameActivity.class.getSimpleName();
     private ArrayList<ImageView> legoArrayList = new ArrayList<>();
@@ -73,7 +74,7 @@ public class GameActivity extends AppCompatActivity {
         screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
         screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         legoHeight = getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight();
-        legoWidth = getResources().getDrawable(R.drawable.player_lego).getMinimumWidth();
+        legoWidth = getResources().getDrawable(R.drawable.player1).getMinimumWidth();
     }
 
     private void initFrameLayoutManager() {
@@ -85,7 +86,7 @@ public class GameActivity extends AppCompatActivity {
 
         player = new ImageView(this);
         player.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        player.setBackground(getResources().getDrawable(R.drawable.player_lego));
+        player.setBackground(getResources().getDrawable(R.drawable.player1));
         player.setX(screenWidth / 2 - (legoWidth / 2));
         player.setY(screenHeight - legoHeight);
         frameLayoutManager.addView(player);
@@ -124,7 +125,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void setColor() {
         random = new Random();
-        int i = random.nextInt(7);
+        int i = random.nextInt(16);
         switch (i) {
             case 0:
                 drawable = getResources().getDrawable(R.drawable.blue_lego);
@@ -146,6 +147,33 @@ public class GameActivity extends AppCompatActivity {
                 break;
             case 6:
                 drawable = getResources().getDrawable(R.drawable.purple_lego);
+                break;
+            case 7:
+                drawable = getResources().getDrawable(R.drawable.player1);
+                break;
+            case 8:
+                drawable = getResources().getDrawable(R.drawable.player2);
+                break;
+            case 9:
+                drawable = getResources().getDrawable(R.drawable.player3);
+                break;
+            case 10:
+                drawable = getResources().getDrawable(R.drawable.player4);
+                break;
+            case 11:
+                drawable = getResources().getDrawable(R.drawable.player5);
+                break;
+            case 12:
+                drawable = getResources().getDrawable(R.drawable.player6);
+                break;
+            case 13:
+                drawable = getResources().getDrawable(R.drawable.player7);
+                break;
+            case 14:
+                drawable = getResources().getDrawable(R.drawable.player8);
+                break;
+            case 15:
+                drawable = getResources().getDrawable(R.drawable.player9);
                 break;
         }
     }
@@ -200,6 +228,7 @@ public class GameActivity extends AppCompatActivity {
         animY.setDuration(legoFallDelayMillis);
         animY.setInterpolator(new LinearInterpolator());
         animY.start();
+        animY.addUpdateListener(this);
         animY.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -252,8 +281,10 @@ public class GameActivity extends AppCompatActivity {
     private void checkHit() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
 
-
         if (checkValidity()) {
+            //if (hitSuperHead()) {
+
+           // }
             isDead = true;
             ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
             if (lives > 0) {
@@ -286,6 +317,30 @@ public class GameActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    private boolean hitSuperHead() {
+        Drawable drawable1 = legoArrayList.get(0).getDrawable();
+
+        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player1))
+            return true;
+        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player2))
+            return true;
+        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player3))
+            return true;
+        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player4))
+            return true;
+        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player5))
+            return true;
+        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player6))
+            return true;
+        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player7))
+            return true;
+        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player8))
+            return true;
+        if (legoArrayList.get(0).getDrawable().equals(R.drawable.player9))
+            return true;
+        return false;
     }
 
     private boolean checkValidity() {
@@ -323,5 +378,9 @@ public class GameActivity extends AppCompatActivity {
         mediaPlayer.start();
         tickEndlessly();
         super.onResume();
+    }
+
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
     }
 }
