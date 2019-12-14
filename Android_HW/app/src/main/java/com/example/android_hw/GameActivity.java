@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -52,11 +53,13 @@ public class GameActivity extends AppCompatActivity {
     private Lives heartImg;
     private LinearLayout heartsLinearLayout;
     private ArrayList<ImageView> hearts = new ArrayList<>();
+    private SharedPreferences pref;
     ;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
         playMusic();
         getScreenHeightAndWidthAndLegoHeightAndWidth();
         initFrameLayoutManager();
@@ -188,7 +191,7 @@ public class GameActivity extends AppCompatActivity {
 
     public void checkHit() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
-        if (checkValidity()) {
+        if (true) {
             player.hit();
             isDead = true;
             ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
@@ -218,18 +221,35 @@ public class GameActivity extends AppCompatActivity {
                     delayMillis -= 10;
                 }
             }
-
         }
     }
 
-    private boolean checkValidity() {
-        int[] location = new int[2];
-        legoArrayList.get(0).getLocationOnScreen(location);
-        if (isDead)
-            return false;
-        if ((location[0] > player.getX() && location[0] < player.getX() + legoWidth))
-            return true;
-        return (location[0] < player.getX() && location[0] + legoWidth > player.getX());
+    public void updateHighestScore() {
+        ++highestScore;
+        if (pref.getInt(getString(R.string.highestScore), -1) < highestScore && pref.getInt(getString(R.string.highestScore), -1) > 0) {
+            scoreText.setTextColor(Color.RED);
+            scoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, highestScore)));
+        } else
+            scoreText.setText(getString(R.string.score, highestScore));
+        if (highestScore % 10 == 0) {
+            scoreAnimation.start();
+            if (delayMillis > 200) {
+                delayMillis -= 10;
+            }
+        }
+    }
+
+    public void EndGame() {
+
+        if (pref.getInt(getString(R.string.highestScore), -1) < highestScore) {
+            pref.edit().putInt(getString(R.string.highestScore), highestScore).apply();
+        }
+        mediaPlayer.stop();
+        if (isDead) {
+            Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void initLinearLayoutManager(LinearLayout linearLayoutManager) {
@@ -257,5 +277,33 @@ public class GameActivity extends AppCompatActivity {
         mediaPlayer.start();
         tickEndlessly();
         super.onResume();
+    }
+
+    public PlayerActivity getPlayer() {
+        return player;
+    }
+
+    public static boolean checkCollision(ImageView player, ImageView lego) {
+
+        int player_width = player.getDrawable().getMinimumWidth();
+        int player_height = player.getDrawable().getMinimumHeight();
+
+        int lego_width = lego.getDrawable().getMinimumWidth();
+        int lego_height = lego.getDrawable().getMinimumHeight();
+
+        double gracePercentY = 0.6;
+        double gracePercentX = 0.1;
+
+        int[] location = new int[2];
+        lego.getLocationOnScreen(location);
+
+        Rect R1 = new Rect((int) ((int) player.getX() + player_width * gracePercentX), (int) ((int) player.getY() + gracePercentY * player_height), (int) (player.getX() + player_width * (1 - gracePercentX)), (int) ((int) player.getY() + player_height * (1 + gracePercentY)));
+        Rect R2 = new Rect(location[0], location[1], (location[0] + lego_width), location[1] + lego_height);
+
+        return R1.intersect(R2);
+    }
+
+    public void Vibrate() {
+        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
     }
 }

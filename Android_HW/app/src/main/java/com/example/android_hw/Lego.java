@@ -5,8 +5,8 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Vibrator;
 import android.util.Log;
-import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 
@@ -18,6 +18,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     private static final String TAG = Lego.class.getSimpleName();
     private GameActivity gameActivity;
     private Random random;
+    private boolean hitPlayer = false;
 
     public Lego(GameActivity context) {
         super(context);
@@ -26,7 +27,6 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     }
 
     private void setLego() {
-        this.setImageResource(R.drawable.red_lego);
         this.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         setColor();
     }
@@ -36,25 +36,25 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
         int i = random.nextInt(7);
         switch (i) {
             case 0:
-                this.getResources().getDrawable(R.drawable.blue_lego);
+                this.setImageResource(R.drawable.blue_lego);
                 break;
             case 1:
-                this.getResources().getDrawable(R.drawable.red_lego);
+                this.setImageResource(R.drawable.red_lego);
                 break;
             case 2:
-                this.getResources().getDrawable(R.drawable.yellow_lego);
+                this.setImageResource(R.drawable.yellow_lego);
                 break;
             case 3:
-                this.getResources().getDrawable(R.drawable.green_lego);
+                this.setImageResource(R.drawable.green_lego);
                 break;
             case 4:
-                this.getResources().getDrawable(R.drawable.pink_lego);
+                this.setImageResource(R.drawable.pink_lego);
                 break;
             case 5:
-                this.getResources().getDrawable(R.drawable.orange_lego);
+                this.setImageResource(R.drawable.orange_lego);
                 break;
             case 6:
-                this.getResources().getDrawable(R.drawable.purple_lego);
+                this.setImageResource(R.drawable.purple_lego);
                 break;
         }
     }
@@ -91,7 +91,21 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        Log.e(TAG, "onAnimationUpdate: ");
-        //gameActivity.checkHit();
+        if (!hitPlayer && checkHit(gameActivity.getPlayer())) {
+            gameActivity.getPlayer().hit();
+            gameActivity.Vibrate();
+        }
+        else{
+            gameActivity.updateHighestScore();
+        }
+    }
+
+
+    public boolean checkHit(PlayerActivity player) {
+        if (GameActivity.checkCollision(player, this)) {
+            hitPlayer = true;
+            return true;
+        }
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.android_hw;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +37,8 @@ public class PlayerActivity extends AppCompatImageView {
         if (num_lives > 0) {
             gameActivity.removeLife();
             --num_lives;
+        } else {
+            gameActivity.EndGame();
         }
     }
 }
