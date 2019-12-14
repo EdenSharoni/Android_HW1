@@ -2,7 +2,6 @@ package com.example.android_hw;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +12,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,7 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class GameActivity extends AppCompatActivity implements ValueAnimator.AnimatorUpdateListener {
+public class GameActivity extends AppCompatActivity {
 
     private static final String TAG = GameActivity.class.getSimpleName();
     private ArrayList<ImageView> legoArrayList = new ArrayList<>();
@@ -83,12 +81,7 @@ public class GameActivity extends AppCompatActivity implements ValueAnimator.Ani
     }
 
     private void initPlayer() {
-
-        player = new ImageView(this);
-        player.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        player.setBackground(getResources().getDrawable(R.drawable.player1));
-        player.setX(screenWidth / 2 - (legoWidth / 2));
-        player.setY(screenHeight - legoHeight);
+        player = new PlayerActivity(this);
         frameLayoutManager.addView(player);
     }
 
@@ -123,61 +116,6 @@ public class GameActivity extends AppCompatActivity implements ValueAnimator.Ani
         return super.onTouchEvent(event);
     }
 
-    private void setColor() {
-        random = new Random();
-        int i = random.nextInt(16);
-        switch (i) {
-            case 0:
-                drawable = getResources().getDrawable(R.drawable.blue_lego);
-                break;
-            case 1:
-                drawable = getResources().getDrawable(R.drawable.red_lego);
-                break;
-            case 2:
-                drawable = getResources().getDrawable(R.drawable.yellow_lego);
-                break;
-            case 3:
-                drawable = getResources().getDrawable(R.drawable.green_lego);
-                break;
-            case 4:
-                drawable = getResources().getDrawable(R.drawable.pink_lego);
-                break;
-            case 5:
-                drawable = getResources().getDrawable(R.drawable.orange_lego);
-                break;
-            case 6:
-                drawable = getResources().getDrawable(R.drawable.purple_lego);
-                break;
-            case 7:
-                drawable = getResources().getDrawable(R.drawable.player1);
-                break;
-            case 8:
-                drawable = getResources().getDrawable(R.drawable.player2);
-                break;
-            case 9:
-                drawable = getResources().getDrawable(R.drawable.player3);
-                break;
-            case 10:
-                drawable = getResources().getDrawable(R.drawable.player4);
-                break;
-            case 11:
-                drawable = getResources().getDrawable(R.drawable.player5);
-                break;
-            case 12:
-                drawable = getResources().getDrawable(R.drawable.player6);
-                break;
-            case 13:
-                drawable = getResources().getDrawable(R.drawable.player7);
-                break;
-            case 14:
-                drawable = getResources().getDrawable(R.drawable.player8);
-                break;
-            case 15:
-                drawable = getResources().getDrawable(R.drawable.player9);
-                break;
-        }
-    }
-
     private void tickEndlessly() {
         Handler mainLayout = new Handler();
         mainLayout.postDelayed(new Runnable() {
@@ -192,8 +130,6 @@ public class GameActivity extends AppCompatActivity implements ValueAnimator.Ani
     }
 
     private void legoGame() {
-        Log.e(TAG, "legoGame: ");
-
         //Dynamic - Can be Changed
         int amountOfLegoColumn = 5;
         random = new Random();
@@ -211,10 +147,7 @@ public class GameActivity extends AppCompatActivity implements ValueAnimator.Ani
             initLinearLayout(linearLayout);
 
             if (i == legoCurrentPosition) {
-                lego = new ImageView(this);
-                lego.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                setColor();
-                lego.setBackground(drawable);
+                lego = new Lego(this);
                 legoArrayList.add(lego);
                 linearLayout.addView(lego);
             }
@@ -228,7 +161,6 @@ public class GameActivity extends AppCompatActivity implements ValueAnimator.Ani
         animY.setDuration(legoFallDelayMillis);
         animY.setInterpolator(new LinearInterpolator());
         animY.start();
-        animY.addUpdateListener(this);
         animY.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -351,9 +283,5 @@ public class GameActivity extends AppCompatActivity implements ValueAnimator.Ani
         mediaPlayer.start();
         tickEndlessly();
         super.onResume();
-    }
-
-    @Override
-    public void onAnimationUpdate(ValueAnimator animation) {
     }
 }
