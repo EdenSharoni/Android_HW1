@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,9 +36,7 @@ public class GameActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private FrameLayout frameLayoutManager;
     private ObjectAnimator scoreAnimation;
-    private ImageView lego;
-    private ImageView player;
-    private TextView liveText;
+    private PlayerActivity player;
     private TextView scoreText;
     private Drawable drawable;
     private Random random;
@@ -49,6 +49,10 @@ public class GameActivity extends AppCompatActivity {
     private float legoWidth;
     private float screenHeight;
     private float screenWidth;
+    private Lives heartImg;
+    private LinearLayout heartsLinearLayout;
+    private ArrayList<ImageView> hearts = new ArrayList<>();
+    ;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +61,8 @@ public class GameActivity extends AppCompatActivity {
         getScreenHeightAndWidthAndLegoHeightAndWidth();
         initFrameLayoutManager();
         initPlayer();
-        initLives();
+        heartsLinearLayout = new LinearLayout(this);
+        addHeartsToGame();
         initScore();
         setContentView(frameLayoutManager);
     }
@@ -85,12 +90,36 @@ public class GameActivity extends AppCompatActivity {
         frameLayoutManager.addView(player);
     }
 
-    private void initLives() {
-        liveText = new TextView(this);
-        liveText.setText(getString(R.string.lives, (lives + 1)));
-        liveText.setTextColor(Color.BLACK);
-        liveText.setTextSize(30f);
-        frameLayoutManager.addView(liveText);
+    private void addHeartsToGame() {
+        heartsLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        clearHearts();
+        for (int i = 0; i < player.getNum_lives(); i++) {
+            addHeart(heartsLinearLayout);
+        }
+        frameLayoutManager.addView(heartsLinearLayout);
+    }
+
+    private void clearHearts() {
+        for (int i = 0; i < hearts.size(); i++) {
+            hearts.get(i).setVisibility(View.GONE);
+        }
+        hearts.clear();
+    }
+
+    private void addHeart(LinearLayout linearLayout) {
+        heartImg = new Lives(this);
+        hearts.add(heartImg);
+        linearLayout.addView(heartImg);
+    }
+
+    public void addLife() {
+        addHeartsToGame();
+    }
+
+    public void removeLife() {
+        if (player.getNum_lives() >= 0)
+            hearts.get(player.getNum_lives() - 1).setVisibility(View.GONE);
+        heartsLinearLayout.removeView(hearts.get(player.getNum_lives() - 1));
     }
 
     private void initScore() {
@@ -147,79 +176,24 @@ public class GameActivity extends AppCompatActivity {
             initLinearLayout(linearLayout);
 
             if (i == legoCurrentPosition) {
-                lego = new Lego(this);
+                Lego lego = new Lego(this);
+                lego.animateLego();
                 legoArrayList.add(lego);
                 linearLayout.addView(lego);
             }
             linearLayoutManager.addView(linearLayout);
         }
-
         frameLayoutManager.addView(linearLayoutManager);
-
-        ObjectAnimator animY = ObjectAnimator.ofFloat(lego, "Y", 0f, screenHeight - legoHeight);
-        int legoFallDelayMillis = 700;
-        animY.setDuration(legoFallDelayMillis);
-        animY.setInterpolator(new LinearInterpolator());
-        animY.start();
-        animY.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                checkHit();
-                int[] location = new int[2];
-                legoArrayList.get(0).getLocationOnScreen(location);
-                ObjectAnimator endAnimY = ObjectAnimator.ofFloat(legoArrayList.get(0), "Y", screenHeight - legoHeight, screenHeight);
-                endAnimY.setDuration(100);
-                endAnimY.start();
-                endAnimY.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        checkHit();
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        legoArrayList.get(0).setVisibility(View.GONE);
-                        legoArrayList.remove(0);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
     }
 
-    private void checkHit() {
+    public void checkHit() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
-
         if (checkValidity()) {
+            player.hit();
             isDead = true;
             ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
-            if (lives > 0) {
+            if (player.getNum_lives() > 0) {
                 isDead = false;
-                --lives;
-                liveText.setText(getString(R.string.lives, (lives + 1)));
             } else {
                 if (pref.getInt(getString(R.string.highestScore), -1) < highestScore) {
                     pref.edit().putInt(getString(R.string.highestScore), highestScore).apply();
