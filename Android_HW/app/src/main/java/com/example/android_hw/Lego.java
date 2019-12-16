@@ -4,8 +4,10 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -16,11 +18,13 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     private static final String TAG = Lego.class.getSimpleName();
     private GameActivity gameActivity;
     private boolean hitPlayer = false;
+    private int imageID;
+    private boolean superHead = false;
 
     public Lego(GameActivity context) {
         super(context);
-        setLego();
         this.gameActivity = context;
+        setLego();
     }
 
     private void setLego() {
@@ -30,30 +34,70 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
 
     private void setColor() {
         Random random = new Random();
-        int i = random.nextInt(7);
+        int randomNumber = 7;
+
+        if (random.nextInt(10) == 5) //Random superHead
+            randomNumber = 16;
+
+        int i = random.nextInt(randomNumber);
+
         switch (i) {
             case 0:
-                this.setImageResource(R.drawable.blue_lego);
+                imageID = R.drawable.blue_lego;
                 break;
             case 1:
-                this.setImageResource(R.drawable.red_lego);
+                imageID = R.drawable.red_lego;
                 break;
             case 2:
-                this.setImageResource(R.drawable.yellow_lego);
+                imageID = R.drawable.yellow_lego;
                 break;
             case 3:
-                this.setImageResource(R.drawable.green_lego);
+                imageID = R.drawable.green_lego;
                 break;
             case 4:
-                this.setImageResource(R.drawable.pink_lego);
+                imageID = R.drawable.pink_lego;
                 break;
             case 5:
-                this.setImageResource(R.drawable.orange_lego);
+                imageID = R.drawable.orange_lego;
                 break;
             case 6:
-                this.setImageResource(R.drawable.purple_lego);
+                imageID = R.drawable.purple_lego;
                 break;
+            case 7:
+                imageID = R.drawable.player1;
+                break;
+            case 8:
+                imageID = R.drawable.player2;
+                break;
+            case 9:
+                imageID = R.drawable.player3;
+                break;
+            case 10:
+                imageID = R.drawable.player4;
+                break;
+            case 11:
+                imageID = R.drawable.player5;
+                break;
+            case 12:
+                imageID = R.drawable.player6;
+                break;
+            case 13:
+                imageID = R.drawable.player7;
+                break;
+            case 14:
+                imageID = R.drawable.player8;
+                break;
+            case 15:
+                imageID = R.drawable.player9;
+                break;
+
         }
+        if (i > 6) {
+            superHead = true;
+        } else {
+            superHead = false;
+        }
+        this.setImageResource(imageID);
     }
 
     public void animateLego() {
@@ -72,7 +116,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (!hitPlayer) {
-                    gameActivity.updateHighestScore();
+                    gameActivity.getScore().updateHighestScore();
                 }
                 lego.setVisibility(GONE);
             }
@@ -92,8 +136,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         if (!hitPlayer && checkHit(gameActivity.getPlayer()) && !gameActivity.gameHasEnded()) {
-            gameActivity.getPlayer().hit();
-            gameActivity.Vibrate();
+            gameActivity.getPlayer().hit(superHead, this.getDrawable());
         }
     }
 

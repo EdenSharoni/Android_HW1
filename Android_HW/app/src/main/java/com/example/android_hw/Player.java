@@ -1,6 +1,14 @@
 package com.example.android_hw;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -12,6 +20,9 @@ public class Player extends AppCompatImageView {
     private final int MAX_NUM_OF_LIVES = 3;
     private int num_lives = MAX_NUM_OF_LIVES;
     private GameActivity gameActivity;
+    private ObjectAnimator scaleX;
+    private ObjectAnimator scaleY;
+    private AnimatorSet scale;
 
     public Player(GameActivity context) {
         super(context);
@@ -30,10 +41,57 @@ public class Player extends AppCompatImageView {
         return num_lives;
     }
 
-    public void hit() {
-        gameActivity.removeLife();
-        --num_lives;
-        if (num_lives == 0)
-            gameActivity.EndGame();
+    public void animatePlayer() {
+        final Player lego = this;
+        scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.2f);
+        scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.2f);
+        scaleX.setDuration(100);
+        scaleY.setDuration(100);
+        scale = new AnimatorSet();
+        scale.play(scaleX).with(scaleY);
+        scale.start();
+
+        scale.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                scaleX = ObjectAnimator.ofFloat(lego, "scaleX", 1f);
+                scaleY = ObjectAnimator.ofFloat(lego, "scaleY", 1f);
+                scaleX.setDuration(100);
+                scaleY.setDuration(100);
+                scale = new AnimatorSet();
+                scale.play(scaleX).with(scaleY);
+                scale.start();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+    }
+
+    public void hit(boolean superHead, Drawable lego) {
+        if (!superHead) {
+            gameActivity.Vibrate();
+            gameActivity.removeLife();
+            --num_lives;
+            if (num_lives == 0)
+                gameActivity.EndGame();
+        } else {
+            animatePlayer();
+            this.setImageDrawable(lego);
+            ++num_lives;
+            gameActivity.addLife();
+        }
     }
 }

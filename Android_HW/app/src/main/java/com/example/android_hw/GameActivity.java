@@ -61,6 +61,7 @@ public class GameActivity extends AppCompatActivity {
         //Setup hearts layout
         heartsLinearLayout = new LinearLayout(this);
         addHeartsToGame();
+        frameLayoutManager.addView(heartsLinearLayout);
     }
 
     private void addHeartsToGame() {
@@ -69,7 +70,6 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < player.getNum_lives(); i++) {
             addHeart(heartsLinearLayout);
         }
-        frameLayoutManager.addView(heartsLinearLayout);
     }
 
     private void clearHearts() {
@@ -108,7 +108,6 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (!pauseIsGame) {
-                    Log.e(TAG, "tick");
                     tickEndlessly();
                 }
                 legoGame();
@@ -141,8 +140,8 @@ public class GameActivity extends AppCompatActivity {
         frameLayoutManager.addView(linearLayoutManager);
     }
 
-    public void updateHighestScore() {
-        scoreText.updateHighestScore();
+    public Score getScore() {
+        return scoreText;
     }
 
     public void EndGame() {
@@ -154,9 +153,10 @@ public class GameActivity extends AppCompatActivity {
         finish();
     }
 
-    public boolean gameHasEnded(){
+    public boolean gameHasEnded() {
         return pauseIsGame;
     }
+
     private void initLinearLayoutManager(LinearLayout linearLayoutManager) {
         linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
         linearLayoutManager.setGravity(Gravity.CENTER);
