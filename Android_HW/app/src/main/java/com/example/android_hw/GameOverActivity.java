@@ -28,7 +28,7 @@ public class GameOverActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    @OnClick({R.id.playAgainBtn, R.id.exitBtn})
+    @OnClick({R.id.playAgainBtn, R.id.exitBtn, R.id.highestScoreBtn})
     public void onClick(View v) {
         ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(20);
         switch (v.getId()) {
@@ -36,6 +36,10 @@ public class GameOverActivity extends AppCompatActivity implements View.OnClickL
                 Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                 startActivityForResult(intent, 1);
                 finish();
+                break;
+            case R.id.highestScoreBtn:
+                //Intent intent2 = new Intent(getApplicationContext(), HighestScoreFragment.class);
+                //startActivity(intent2);
                 break;
             case R.id.exitBtn:
                 finish();
