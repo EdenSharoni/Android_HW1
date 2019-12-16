@@ -1,22 +1,21 @@
 package com.example.android_hw;
 
+import android.util.Log;
+
 import java.util.Random;
 
 public class SuperHead extends Lego {
-
-    private int imageID;
+    private static final String TAG = SuperHead.class.getSimpleName();
 
     public SuperHead(GameActivity context) {
         super(context);
     }
 
-    private void setColor() {
+    @Override
+    protected void setColor() {
         Random random = new Random();
-
         int i = random.nextInt(9);
-
         switch (i) {
-
             case 0:
                 imageID = R.drawable.player1;
                 break;
@@ -45,13 +44,6 @@ public class SuperHead extends Lego {
                 imageID = R.drawable.player9;
                 break;
         }
-        /*if (i > 6) {
-            superHead = true;
-        } else {
-            superHead = false;
-        }
         this.setImageResource(imageID);
-        */
     }
-
 }

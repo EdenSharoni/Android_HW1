@@ -38,8 +38,8 @@ public class Player extends AppCompatImageView {
 
     public void animatePlayer(Drawable lego) {
         final Player player = this;
-        scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.2f);
-        scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.2f);
+        scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.3f);
+        scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.3f);
         scaleX.setDuration(100);
         scaleY.setDuration(100);
         scale = new AnimatorSet();
@@ -80,7 +80,7 @@ public class Player extends AppCompatImageView {
     }
 
     public void hit() {
-        gameActivity.Vibrate();
+        //gameActivity.Vibrate(); //TODO - remove comment
         gameActivity.removeLife();
         --num_lives;
         if (num_lives == 0)
