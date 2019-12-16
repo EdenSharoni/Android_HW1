@@ -12,9 +12,9 @@ import androidx.appcompat.widget.AppCompatImageView;
 import java.util.Random;
 
 public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUpdateListener {
+
     private static final String TAG = Lego.class.getSimpleName();
     private GameActivity gameActivity;
-    private Random random;
     private boolean hitPlayer = false;
 
     public Lego(GameActivity context) {
@@ -29,7 +29,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     }
 
     private void setColor() {
-        random = new Random();
+        Random random = new Random();
         int i = random.nextInt(7);
         switch (i) {
             case 0:
@@ -58,8 +58,8 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
 
     public void animateLego() {
         final Lego lego = this;
-        ObjectAnimator animY = ObjectAnimator.ofFloat(this, "Y", 0f, Resources.getSystem().getDisplayMetrics().heightPixels);
         int legoFallDelayMillis = 700;
+        ObjectAnimator animY = ObjectAnimator.ofFloat(this, "Y", 0f, Resources.getSystem().getDisplayMetrics().heightPixels);
         animY.setDuration(legoFallDelayMillis);
         animY.setInterpolator(new LinearInterpolator());
         animY.addUpdateListener(this);
@@ -71,7 +71,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!hitPlayer && !checkHit(gameActivity.getPlayer())) {
+                if (!hitPlayer) {
                     gameActivity.updateHighestScore();
                 }
                 lego.setVisibility(GONE);
@@ -91,7 +91,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        if (!hitPlayer && checkHit(gameActivity.getPlayer())) {
+        if (!hitPlayer && checkHit(gameActivity.getPlayer()) && !gameActivity.gameHasEnded()) {
             gameActivity.getPlayer().hit();
             gameActivity.Vibrate();
         }

@@ -9,7 +9,6 @@ import androidx.appcompat.widget.AppCompatImageView;
 public class Player extends AppCompatImageView {
 
     private static final String TAG = Player.class.getSimpleName();
-    private ImageView player;
     private final int MAX_NUM_OF_LIVES = 3;
     private int num_lives = MAX_NUM_OF_LIVES;
     private GameActivity gameActivity;

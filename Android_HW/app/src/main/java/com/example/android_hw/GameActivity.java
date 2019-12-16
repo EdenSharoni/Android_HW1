@@ -23,21 +23,19 @@ import java.util.Random;
 public class GameActivity extends AppCompatActivity {
 
     private static final String TAG = GameActivity.class.getSimpleName();
-    private MediaPlayer mediaPlayer;
     private FrameLayout frameLayoutManager;
-    private Player player;
-    private Score scoreText;
-    private Random random;
-    private boolean pauseIsGame = false;
-    private Lives heartImg;
     private LinearLayout heartsLinearLayout;
     private ArrayList<ImageView> hearts = new ArrayList<>();
+    private MediaPlayer mediaPlayer;
+    private Player player;
+    private Score scoreText;
+    private Lives heartImg;
+    private boolean pauseIsGame = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         initGame();
-        addHeartsToGame();
         setContentView(frameLayoutManager);
     }
 
@@ -62,6 +60,7 @@ public class GameActivity extends AppCompatActivity {
 
         //Setup hearts layout
         heartsLinearLayout = new LinearLayout(this);
+        addHeartsToGame();
     }
 
     private void addHeartsToGame() {
@@ -120,7 +119,7 @@ public class GameActivity extends AppCompatActivity {
     private void legoGame() {
         //Dynamic - Can be Changed
         int amountOfLegoColumn = 5;
-        random = new Random();
+        Random random = new Random();
 
         int legoCurrentPosition = random.nextInt(amountOfLegoColumn);
 
@@ -155,6 +154,9 @@ public class GameActivity extends AppCompatActivity {
         finish();
     }
 
+    public boolean gameHasEnded(){
+        return pauseIsGame;
+    }
     private void initLinearLayoutManager(LinearLayout linearLayoutManager) {
         linearLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
         linearLayoutManager.setGravity(Gravity.CENTER);
