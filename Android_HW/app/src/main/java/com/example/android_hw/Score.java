@@ -57,13 +57,14 @@ public class Score extends AppCompatTextView {
         return delayMillis;
     }
 
-    public int getHighestScore() {
-        return highestScore;
-    }
-
     public void setHighestScoreEndGame() {
         if (pref.getInt(getResources().getString(R.string.highestScore), -1) < highestScore) {
             pref.edit().putInt(getResources().getString(R.string.highestScore), highestScore).apply();
         }
+    }
+
+    public void superCoin() {
+        highestScore += 9;
+        updateHighestScore();
     }
 }

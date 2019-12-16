@@ -137,9 +137,9 @@ public class GameActivity extends AppCompatActivity {
                     lego = new SuperHead(this);
                 }
                 //Random coin
-                /*if (legoNumber == 7){
+                if (legoNumber == 7) {
                     lego = new Coin(this);
-                 }*/
+                }
                 //Random lego
                 else {
                     lego = new Lego(this);

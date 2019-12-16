@@ -97,6 +97,8 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
         if (!hitPlayer && checkHit(gameActivity.getPlayer()) && !gameActivity.gameHasEnded()) {
             if (this instanceof SuperHead) {
                 gameActivity.getPlayer().animatePlayer(this.getDrawable());
+            } else if (this instanceof Coin) {
+                gameActivity.getScore().superCoin();
             } else {
                 gameActivity.getPlayer().hit();
             }
