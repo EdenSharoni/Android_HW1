@@ -134,7 +134,11 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         if (!hitPlayer && checkHit(gameActivity.getPlayer()) && !gameActivity.gameHasEnded()) {
-            gameActivity.getPlayer().hit(superHead, this.getDrawable());
+            if (!superHead) {
+                gameActivity.getPlayer().hit();
+            } else {
+                gameActivity.getPlayer().animatePlayer(this.getDrawable());
+            }
         }
     }
 

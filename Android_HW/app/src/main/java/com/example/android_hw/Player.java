@@ -36,8 +36,8 @@ public class Player extends AppCompatImageView {
         return num_lives;
     }
 
-    public void animatePlayer() {
-        final Player lego = this;
+    public void animatePlayer(Drawable lego) {
+        final Player player = this;
         scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.2f);
         scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.2f);
         scaleX.setDuration(100);
@@ -45,6 +45,10 @@ public class Player extends AppCompatImageView {
         scale = new AnimatorSet();
         scale.play(scaleX).with(scaleY);
         scale.start();
+
+        this.setImageDrawable(lego);
+        ++num_lives;
+        gameActivity.addLife();
 
         scale.addListener(new Animator.AnimatorListener() {
             @Override
@@ -54,8 +58,8 @@ public class Player extends AppCompatImageView {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                scaleX = ObjectAnimator.ofFloat(lego, "scaleX", 1f);
-                scaleY = ObjectAnimator.ofFloat(lego, "scaleY", 1f);
+                scaleX = ObjectAnimator.ofFloat(player, "scaleX", 1f);
+                scaleY = ObjectAnimator.ofFloat(player, "scaleY", 1f);
                 scaleX.setDuration(100);
                 scaleY.setDuration(100);
                 scale = new AnimatorSet();
@@ -75,18 +79,11 @@ public class Player extends AppCompatImageView {
         });
     }
 
-    public void hit(boolean superHead, Drawable lego) {
-        if (!superHead) {
-            gameActivity.Vibrate();
-            gameActivity.removeLife();
-            --num_lives;
-            if (num_lives == 0)
-                gameActivity.EndGame();
-        } else {
-            animatePlayer();
-            this.setImageDrawable(lego);
-            ++num_lives;
-            gameActivity.addLife();
-        }
+    public void hit() {
+        gameActivity.Vibrate();
+        gameActivity.removeLife();
+        --num_lives;
+        if (num_lives == 0)
+            gameActivity.EndGame();
     }
 }
