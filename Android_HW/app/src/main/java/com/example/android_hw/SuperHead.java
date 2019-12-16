@@ -1,7 +1,5 @@
 package com.example.android_hw;
 
-import android.util.Log;
-
 import java.util.Random;
 
 public class SuperHead extends Lego {
