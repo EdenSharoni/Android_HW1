@@ -5,11 +5,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatImageView;

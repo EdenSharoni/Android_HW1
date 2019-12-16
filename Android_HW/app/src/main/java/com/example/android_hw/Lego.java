@@ -4,10 +4,8 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
