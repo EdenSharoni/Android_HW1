@@ -28,7 +28,6 @@ public class GameActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private Player player;
     private Score scoreText;
-    private Lives heartImg;
     private boolean pauseIsGame = false;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +78,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void addHeart(LinearLayout linearLayout) {
-        heartImg = new Lives(this);
+        Lives heartImg = new Lives(this);
         hearts.add(heartImg);
         linearLayout.addView(heartImg);
     }
@@ -97,7 +96,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
-        player.setX(x - (getResources().getDrawable(R.drawable.red_lego).getMinimumHeight() / 2));
+        player.setX(x - ((float) getResources().getDrawable(R.drawable.red_lego).getMinimumHeight() / 2));
         return super.onTouchEvent(event);
     }
 
