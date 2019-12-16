@@ -1,14 +1,8 @@
 package com.example.android_hw;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,13 +11,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,64 +23,45 @@ import java.util.Random;
 public class GameActivity extends AppCompatActivity {
 
     private static final String TAG = GameActivity.class.getSimpleName();
-    private ArrayList<ImageView> legoArrayList = new ArrayList<>();
     private MediaPlayer mediaPlayer;
     private FrameLayout frameLayoutManager;
-    private ObjectAnimator scoreAnimation;
-    private PlayerActivity player;
-    private TextView scoreText;
-    private Drawable drawable;
+    private Player player;
+    private Score scoreText;
     private Random random;
-    private boolean isDead = false;
     private boolean pauseIsGame = false;
-    private int highestScore = 0;
-    private int delayMillis = 400;
-    private int lives = 2;
-    private float legoHeight;
-    private float legoWidth;
-    private float screenHeight;
-    private float screenWidth;
     private Lives heartImg;
     private LinearLayout heartsLinearLayout;
     private ArrayList<ImageView> hearts = new ArrayList<>();
-    private SharedPreferences pref;
-    ;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
-        playMusic();
-        getScreenHeightAndWidthAndLegoHeightAndWidth();
-        initFrameLayoutManager();
-        initPlayer();
-        heartsLinearLayout = new LinearLayout(this);
+        initGame();
         addHeartsToGame();
-        initScore();
         setContentView(frameLayoutManager);
     }
 
-    private void playMusic() {
+    private void initGame() {
+
+        //Setup main layout
+        frameLayoutManager = new FrameLayout(this);
+        frameLayoutManager.setBackground(getResources().getDrawable(R.drawable.background_lego));
+
+        //Setup Player
+        player = new Player(this);
+        frameLayoutManager.addView(player);
+
+        //SetUp Score
+        scoreText = new Score(this);
+        frameLayoutManager.addView(scoreText);
+
+        //Play music
         mediaPlayer = MediaPlayer.create(this, R.raw.music);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-    }
 
-    private void getScreenHeightAndWidthAndLegoHeightAndWidth() {
-        screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-        screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        legoHeight = getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight();
-        legoWidth = getResources().getDrawable(R.drawable.player1).getMinimumWidth();
-    }
-
-    private void initFrameLayoutManager() {
-        frameLayoutManager = new FrameLayout(this);
-        frameLayoutManager.setBackground(getResources().getDrawable(R.drawable.background_lego));
-    }
-
-    private void initPlayer() {
-        player = new PlayerActivity(this);
-        frameLayoutManager.addView(player);
+        //Setup hearts layout
+        heartsLinearLayout = new LinearLayout(this);
     }
 
     private void addHeartsToGame() {
@@ -125,26 +96,10 @@ public class GameActivity extends AppCompatActivity {
         heartsLinearLayout.removeView(hearts.get(player.getNum_lives() - 1));
     }
 
-    private void initScore() {
-        scoreText = new TextView(this);
-        scoreText.setText(getString(R.string.score, highestScore));
-        scoreText.setTextColor(Color.BLACK);
-        scoreText.setTextSize(30f);
-        scoreText.setGravity(Gravity.CENTER | Gravity.TOP);
-        scoreText.setPadding(0, 300, 0, 0);
-        scoreText.setVisibility(View.VISIBLE);
-        frameLayoutManager.addView(scoreText);
-
-        scoreAnimation = ObjectAnimator.ofFloat(scoreText, "rotation", 0f, 5f, 0f, -5f, 0f); // rotate o degree then 5 degree and so on for one loop of rotation.
-        scoreAnimation.setInterpolator(new AccelerateInterpolator());
-        scoreAnimation.setRepeatCount(2); // repeat the loop 20 times
-        scoreAnimation.setDuration(100); // animation play time 100 ms
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
-        player.setX(x - (legoHeight / 2));
+        player.setX(x - (getResources().getDrawable(R.drawable.red_lego).getMinimumHeight() / 2));
         return super.onTouchEvent(event);
     }
 
@@ -153,20 +108,19 @@ public class GameActivity extends AppCompatActivity {
         mainLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (!isDead && !pauseIsGame) {
+                if (!pauseIsGame) {
+                    Log.e(TAG, "tick");
                     tickEndlessly();
                 }
                 legoGame();
             }
-        }, delayMillis);
+        }, scoreText.getDelayMillis());
     }
 
     private void legoGame() {
         //Dynamic - Can be Changed
         int amountOfLegoColumn = 5;
         random = new Random();
-        if (isDead)
-            return;
 
         int legoCurrentPosition = random.nextInt(amountOfLegoColumn);
 
@@ -181,7 +135,6 @@ public class GameActivity extends AppCompatActivity {
             if (i == legoCurrentPosition) {
                 Lego lego = new Lego(this);
                 lego.animateLego();
-                legoArrayList.add(lego);
                 linearLayout.addView(lego);
             }
             linearLayoutManager.addView(linearLayout);
@@ -189,67 +142,17 @@ public class GameActivity extends AppCompatActivity {
         frameLayoutManager.addView(linearLayoutManager);
     }
 
-    public void checkHit() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
-        if (true) {
-            player.hit();
-            isDead = true;
-            ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
-            if (player.getNum_lives() > 0) {
-                isDead = false;
-            } else {
-                if (pref.getInt(getString(R.string.highestScore), -1) < highestScore) {
-                    pref.edit().putInt(getString(R.string.highestScore), highestScore).apply();
-                }
-                mediaPlayer.stop();
-                if (isDead) {
-                    Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        } else {
-            ++highestScore;
-            if (pref.getInt(getString(R.string.highestScore), -1) < highestScore && pref.getInt(getString(R.string.highestScore), -1) > 0) {
-                scoreText.setTextColor(Color.RED);
-                scoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, highestScore)));
-            } else
-                scoreText.setText(getString(R.string.score, highestScore));
-            if (highestScore % 10 == 0) {
-                scoreAnimation.start();
-                if (delayMillis > 200) {
-                    delayMillis -= 10;
-                }
-            }
-        }
-    }
-
     public void updateHighestScore() {
-        ++highestScore;
-        if (pref.getInt(getString(R.string.highestScore), -1) < highestScore && pref.getInt(getString(R.string.highestScore), -1) > 0) {
-            scoreText.setTextColor(Color.RED);
-            scoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, highestScore)));
-        } else
-            scoreText.setText(getString(R.string.score, highestScore));
-        if (highestScore % 10 == 0) {
-            scoreAnimation.start();
-            if (delayMillis > 200) {
-                delayMillis -= 10;
-            }
-        }
+        scoreText.updateHighestScore();
     }
 
     public void EndGame() {
-
-        if (pref.getInt(getString(R.string.highestScore), -1) < highestScore) {
-            pref.edit().putInt(getString(R.string.highestScore), highestScore).apply();
-        }
+        pauseIsGame = true;
+        scoreText.setHighestScoreEndGame();
         mediaPlayer.stop();
-        if (isDead) {
-            Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void initLinearLayoutManager(LinearLayout linearLayoutManager) {
@@ -279,7 +182,7 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public PlayerActivity getPlayer() {
+    public Player getPlayer() {
         return player;
     }
 

@@ -3,10 +3,7 @@ package com.example.android_hw;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.Context;
 import android.content.res.Resources;
-import android.os.Vibrator;
-import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 
@@ -74,6 +71,9 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (!hitPlayer && !checkHit(gameActivity.getPlayer())) {
+                    gameActivity.updateHighestScore();
+                }
                 lego.setVisibility(GONE);
             }
 
@@ -95,13 +95,9 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
             gameActivity.getPlayer().hit();
             gameActivity.Vibrate();
         }
-        else{
-            gameActivity.updateHighestScore();
-        }
     }
 
-
-    public boolean checkHit(PlayerActivity player) {
+    public boolean checkHit(Player player) {
         if (GameActivity.checkCollision(player, this)) {
             hitPlayer = true;
             return true;

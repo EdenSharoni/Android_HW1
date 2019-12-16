@@ -1,22 +1,20 @@
 package com.example.android_hw;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
-public class PlayerActivity extends AppCompatImageView {
+public class Player extends AppCompatImageView {
 
-    private static final String TAG = PlayerActivity.class.getSimpleName();
+    private static final String TAG = Player.class.getSimpleName();
     private ImageView player;
     private final int MAX_NUM_OF_LIVES = 3;
     private int num_lives = MAX_NUM_OF_LIVES;
     private GameActivity gameActivity;
 
-    public PlayerActivity(GameActivity context) {
+    public Player(GameActivity context) {
         super(context);
         setPlayer();
         this.gameActivity = context;
@@ -34,11 +32,9 @@ public class PlayerActivity extends AppCompatImageView {
     }
 
     public void hit() {
-        if (num_lives > 0) {
-            gameActivity.removeLife();
-            --num_lives;
-        } else {
+        gameActivity.removeLife();
+        --num_lives;
+        if (num_lives == 0)
             gameActivity.EndGame();
-        }
     }
 }
