@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    @OnClick({R.id.playBtn, R.id.helpBtn, R.id.exitBtn, R.id.highestScoreBtn})
+    @OnClick({R.id.playBtn, R.id.helpBtn, R.id.exitBtn, R.id.highestScoreBtn, R.id.settingsBtn})
     public void onClick(View v) {
         ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(20);
         switch (v.getId()) {
@@ -54,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.highestScoreBtn:
                 HighestScoreFragment highestScoreFragment = new HighestScoreFragment();
                 highestScoreFragment.show(getSupportFragmentManager(), TAG);
+                break;
+            case R.id.settingsBtn:
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 break;
             case R.id.exitBtn:
                 finish();
