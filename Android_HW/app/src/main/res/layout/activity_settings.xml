@@ -14,25 +14,34 @@
         android:layout_height="wrap_content"
         android:src="@drawable/settings_title" />
 
-    <LinearLayout
+    <CheckBox
+        android:id="@+id/vibrateCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="30dp"
+        android:button="@null"
+        android:checked="true"
+        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+        android:text="Vibrate: "
+        android:textSize="20dp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/vibrate" />
+    <CheckBox
+        android:id="@+id/musicCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:button="@null"
+        android:checked="true"
+        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+        android:text="Music: "
+        android:textSize="20dp" />
 
-        <CheckBox
-            android:id="@+id/checkbox_meat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:text="fff"
-            />
-
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/backBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/back_btn" />
 
 
 </LinearLayout>

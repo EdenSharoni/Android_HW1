@@ -80,7 +80,7 @@ public class Player extends AppCompatImageView {
     }
 
     public void hit() {
-        //gameActivity.Vibrate(); //TODO - remove comment
+        gameActivity.Vibrate();
         gameActivity.removeLife();
         --num_lives;
         if (num_lives == 0)

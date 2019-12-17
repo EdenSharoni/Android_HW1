@@ -3,6 +3,7 @@ package com.example.android_hw;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -31,6 +32,8 @@ public class GameActivity extends AppCompatActivity {
     private Player player;
     private Score scoreText;
     private boolean pauseIsGame = false;
+    private boolean vibrate;
+    private boolean music;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +43,15 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void initGame() {
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            vibrate = bundle.getBoolean(String.valueOf(R.string.vibrate));
+            music = bundle.getBoolean(String.valueOf(R.string.music));
+        } else {
+            vibrate = true;
+            music = true;
+        }
 
         //Setup main layout
         frameLayoutManager = new FrameLayout(this);
@@ -54,9 +66,11 @@ public class GameActivity extends AppCompatActivity {
         frameLayoutManager.addView(scoreText);
 
         //Play music
-        mediaPlayer = MediaPlayer.create(this, R.raw.music);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+        if (music) {
+            mediaPlayer = MediaPlayer.create(this, R.raw.music);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
 
         //Setup hearts layout
         heartsLinearLayout = new LinearLayout(this);
@@ -161,7 +175,8 @@ public class GameActivity extends AppCompatActivity {
     public void EndGame() {
         pauseIsGame = true;
         scoreText.setHighestScoreEndGame();
-        mediaPlayer.stop();
+        if (music)
+            mediaPlayer.stop();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         setResult(Activity.RESULT_OK, intent);
         finish();
@@ -186,14 +201,16 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         pauseIsGame = true;
-        mediaPlayer.pause();
+        if (music)
+            mediaPlayer.pause();
         super.onStop();
     }
 
     @Override
     protected void onResume() {
         pauseIsGame = false;
-        mediaPlayer.start();
+        if (music)
+            mediaPlayer.start();
         tickEndlessly();
         super.onResume();
     }
@@ -223,6 +240,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void Vibrate() {
-        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
+        if (vibrate)
+            ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
     }
 }
