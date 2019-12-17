@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -130,13 +131,14 @@ public class GameActivity extends AppCompatActivity {
 
             if (i == legoCurrentPosition) {
                 int legoNumber = random.nextInt(10);
+                Log.e(TAG, "legoGame: " + legoNumber);
                 Lego lego;
                 //Random superHead
                 if (legoNumber == 5) {
                     lego = new SuperHead(this);
                 }
                 //Random coin
-                if (legoNumber == 7) {
+                else if (legoNumber == 7) {
                     lego = new Coin(this);
                 }
                 //Random lego

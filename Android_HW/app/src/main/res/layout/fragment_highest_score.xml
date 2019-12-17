@@ -10,13 +10,203 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
         android:background="@drawable/highest_score_title" />
 
-    <TableLayout
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:shrinkColumns="*"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player1" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player2" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player3" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player4" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player5" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player6" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player7" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player8" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player9" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/player1" />
+
+            <TextView
+                android:text="Eden Sharoni"
+                android:textSize="20dp" />
+
+            <TextView
+                android:text="50"
+                android:textSize="20dp" />
+        </TableRow>
+
+    </TableLayout>
+
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/table" />
+        android:layout_marginTop="20dp"
+        android:background="@drawable/back_btn"
+        android:layout_marginBottom="20dp"/>
 
 </LinearLayout>

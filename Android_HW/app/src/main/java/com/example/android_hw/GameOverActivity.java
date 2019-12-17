@@ -5,10 +5,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -25,6 +30,7 @@ public class GameOverActivity extends AppCompatActivity implements View.OnClickL
         TextView highestScoreText = findViewById(R.id.score);
         SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
         highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, pref.getInt(getString(R.string.highestScore), -1))));
+        //getSupportFragmentManager().beginTransaction().attach(new HighestScoreFragment()).hide(new HighestScoreFragment());
     }
 
     @Override
@@ -38,8 +44,8 @@ public class GameOverActivity extends AppCompatActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.highestScoreBtn:
-                //Intent intent2 = new Intent(getApplicationContext(), HighestScoreFragment.class);
-                //startActivity(intent2);
+                HighestScoreFragment highestScoreFragment = new HighestScoreFragment();
+                highestScoreFragment.show(getSupportFragmentManager(), TAG);
                 break;
             case R.id.exitBtn:
                 finish();
