@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
     android:background="@drawable/background"
+    android:gravity="center"
     android:orientation="vertical"
-    android:gravity="center">
+    tools:context=".MainActivity">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -15,30 +15,51 @@
         android:background="@drawable/title" />
 
     <ImageView
+        android:id="@+id/gameOverTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/eden_sharoni"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/game_over" />
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Highest Score: "
+        android:textColor="@color/black" />
 
     <ImageView
         android:id="@+id/playBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/play_btn"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="40dp"
+        android:background="@drawable/play_btn" />
 
     <ImageView
         android:id="@+id/helpBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/help_btn"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="40dp"
+        android:background="@drawable/help_btn" />
+
+    <ImageView
+        android:id="@+id/highestScoreBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/highest_score_btn" />
 
     <ImageView
         android:id="@+id/exitBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/exit_btn"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="40dp"
+        android:background="@drawable/exit_btn" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/eden_sharoni" />
 </LinearLayout>

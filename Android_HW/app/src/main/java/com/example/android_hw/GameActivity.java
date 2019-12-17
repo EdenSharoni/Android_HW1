@@ -1,5 +1,6 @@
 package com.example.android_hw;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -161,8 +162,8 @@ public class GameActivity extends AppCompatActivity {
         pauseIsGame = true;
         scoreText.setHighestScoreEndGame();
         mediaPlayer.stop();
-        Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 
