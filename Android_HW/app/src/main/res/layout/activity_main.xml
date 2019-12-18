@@ -18,7 +18,8 @@
         android:id="@+id/gameOverTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/game_over" />
+        android:src="@drawable/game_over"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/score"

@@ -58,10 +58,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        gameOverTitle.setVisibility(View.GONE);
-
-
-
         /*set highest score to 0
         getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0).edit().putInt("highestScore", 0).apply();*/
     }
@@ -181,12 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addOnSuccessListener(documentSnapshot -> {
                             localUser = documentSnapshot.toObject(User.class);
                             if (localUser == null) {
-                                localUser = new User();
-                                localUser.setId(user.getUid());
-                                localUser.setName(user.getDisplayName());
-                                localUser.setScore(0);
-                                localUser.setVibrateSettings(true);
-                                localUser.setMusicSettings(true);
+                                localUser = new User(user.getUid(), user.getDisplayName(), 0, true, true);
                                 setUserDB();
                             }
                             if (localUser.getName().isEmpty()) {
