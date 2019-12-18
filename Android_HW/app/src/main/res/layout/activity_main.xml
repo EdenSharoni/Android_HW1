@@ -27,11 +27,12 @@
         android:text="Highest Score: "
         android:textColor="@color/black" />
 
-    <com.google.android.gms.common.SignInButton
+    <ImageView
         android:id="@+id/googleBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:src="@drawable/google_btn" />
 
     <ImageView
         android:id="@+id/playBtn"

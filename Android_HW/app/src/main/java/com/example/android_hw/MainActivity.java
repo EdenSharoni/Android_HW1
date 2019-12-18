@@ -5,25 +5,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
+import com.firebase.ui.auth.AuthMethodPickerLayout;
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.google.firebase.auth.FirebaseAuth.getInstance;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private final int RC_SIGN_IN = 3;
@@ -31,8 +29,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SharedPreferences pref;
     private boolean vibrate = true;
     private boolean music = true;
-    private GoogleSignInClient mGoogleSignInClient;
-    private GoogleSignInAccount account;
+    private FirebaseUser user;
+    private AuthMethodPickerLayout customLayout;
 
     @BindView(R.id.gameOverTitle)
     ImageView gameOverTitle;
@@ -40,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView highestScoreText;
     @BindView(R.id.playBtn)
     ImageView play;
-    SignInButton google;
+    @BindView(R.id.googleBtn)
+    ImageView google;
 
 
     @Override
@@ -48,20 +47,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         gameOverTitle.setVisibility(View.GONE);
 
         /*set highest score to 0
         getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0).edit().putInt("highestScore", 0).apply();*/
+    }
 
-        pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
-        highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, pref.getInt(getString(R.string.highestScore), 0))));
-        google = findViewById(R.id.googleBtn);
-
+    private void initGoogle() {
+        //Handles the design
+        customLayout = new AuthMethodPickerLayout
+                .Builder(R.layout.activity_main)
+                .setGoogleButtonId(R.id.googleBtn)
+                .build();
     }
 
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        //Starts the algorithm
+        startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
+                .setIsSmartLockEnabled(true)
+                .setAuthMethodPickerLayout(customLayout)
+                .setAvailableProviders(Arrays.asList(
+                        new AuthUI.IdpConfig.GoogleBuilder().build()))
+                .build(), RC_SIGN_IN);
     }
 
     @Override
@@ -99,11 +107,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //TODO - super has added sheck if function still good
+        //TODO - super has added check if function still good
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
+            play.setVisibility(View.VISIBLE);
+            google.setVisibility(View.GONE);
         }
 
         if (requestCode == 1) {
@@ -121,31 +130,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            account = completedTask.getResult(ApiException.class);
-            play.setVisibility(View.VISIBLE);
-            google.setVisibility(View.GONE);
-        } catch (ApiException e) {
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account == null) {
+        user = getInstance().getCurrentUser();
+        if (user == null) {
             play.setVisibility(View.GONE);
             google.setVisibility(View.VISIBLE);
+            initGoogle();
         } else {
             play.setVisibility(View.VISIBLE);
             google.setVisibility(View.GONE);
         }
+
+        pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
+        highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, pref.getInt(getString(R.string.highestScore), 0))));
     }
 }
