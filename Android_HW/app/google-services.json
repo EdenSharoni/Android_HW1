@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "331492102818",
+    "firebase_url": "https://escape-the-fall.firebaseio.com",
+    "project_id": "escape-the-fall",
+    "storage_bucket": "escape-the-fall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331492102818:android:4f03c35fb3d5587facfdfb",
+        "android_client_info": {
+          "package_name": "com.example.android_hw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331492102818-o4p0ea4ko49qgkm7gep1sl7flfnru1hr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android_hw",
+            "certificate_hash": "15afa0576d4d571564ef1f7b60acbf388c3c876b"
+          }
+        },
+        {
+          "client_id": "331492102818-s52ls9pepovvv1sk7nsa8f54rv1kqqrq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgxQwyKV4mxLy6k-7PF6UKmLRGmUH1R_g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331492102818-s52ls9pepovvv1sk7nsa8f54rv1kqqrq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
