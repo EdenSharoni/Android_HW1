@@ -3,10 +3,8 @@ package com.example.android_hw;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,16 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +42,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView highestScoreText;
     @BindView(R.id.playBtn)
     ImageView play;
+    @BindView(R.id.helpBtn)
+    ImageView help;
+    @BindView(R.id.highestScoreBtn)
+    ImageView highestScore;
+    @BindView(R.id.settingsBtn)
+    ImageView settings;
     @BindView(R.id.googleBtn)
     ImageView google;
 
@@ -119,8 +119,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
+            user = getInstance().getCurrentUser();
             play.setVisibility(View.VISIBLE);
+            help.setVisibility(View.VISIBLE);
+            highestScore.setVisibility(View.VISIBLE);
+            settings.setVisibility(View.VISIBLE);
             google.setVisibility(View.GONE);
+            setUserDB();
         }
 
         if (requestCode == 1) {
@@ -198,10 +203,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         db = FirebaseFirestore.getInstance();
         if (user == null) {
             play.setVisibility(View.GONE);
+            help.setVisibility(View.GONE);
+            highestScore.setVisibility(View.GONE);
+            settings.setVisibility(View.GONE);
             google.setVisibility(View.VISIBLE);
             initGoogle();
         } else {
             play.setVisibility(View.VISIBLE);
+            help.setVisibility(View.VISIBLE);
+            highestScore.setVisibility(View.VISIBLE);
+            settings.setVisibility(View.VISIBLE);
             google.setVisibility(View.GONE);
             getUserFromDB();
         }
