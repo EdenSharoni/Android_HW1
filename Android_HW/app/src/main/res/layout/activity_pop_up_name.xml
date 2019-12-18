@@ -4,25 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".PopUpNameActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name: "
-        android:textSize="30dp" />
 
     <EditText
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:hint="Pick Nick Name"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
         android:textSize="30dp" />
 
     <Button
         android:id="@+id/done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
         android:text="OK"
         android:textSize="30dp" />
 </LinearLayout>

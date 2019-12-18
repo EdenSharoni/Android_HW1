@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent2 = new Intent(getApplicationContext(), SettingsActivity.class);
                 intent2.putExtra(String.valueOf(R.string.vibrate), localUser.isVibrateSettings());
                 intent2.putExtra(String.valueOf(R.string.music), localUser.isMusicSettings());
+                intent2.putExtra("name", localUser.getName());
                 startActivityForResult(intent2, 2);
                 break;
             case R.id.exitBtn:
@@ -125,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             highestScore.setVisibility(View.VISIBLE);
             settings.setVisibility(View.VISIBLE);
             google.setVisibility(View.GONE);
-            setUserDB();
         }
 
         if (requestCode == 1) {
@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (resultCode == RESULT_OK) {
                 localUser.setVibrateSettings(data.getBooleanExtra(String.valueOf(R.string.vibrate), true));
                 localUser.setMusicSettings(data.getBooleanExtra(String.valueOf(R.string.music), true));
+                localUser.setName(data.getStringExtra("name"));
                 setUserDB();
             }
         }

@@ -26,7 +26,7 @@ public class PopUpNameActivity extends AppCompatActivity implements View.OnClick
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width * (0.7)), (int) (height * 0.3));
+        getWindow().setLayout((int) (width * (0.7)), (int) (height * 0.4));
         done = findViewById(R.id.done);
         name = findViewById(R.id.name);
         done.setOnClickListener(this);
