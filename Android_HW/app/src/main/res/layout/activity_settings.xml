@@ -43,14 +43,6 @@
         android:text="Music: "
         android:textSize="20dp" />
 
-
-    <ImageView
-        android:id="@+id/signOutBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/sign_out" />
-
     <ImageView
         android:id="@+id/backBtn"
         android:layout_width="wrap_content"

@@ -28,9 +28,9 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     private ImageView backBtn;
     private boolean vibrateBoolean;
     private boolean musicBoolean;
-    private ImageView signOutBtn;
     private FirebaseUser user;
     private EditText userName;
+    MainActivity mainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,13 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         setContentView(R.layout.activity_settings);
         Bundle bundle = getIntent().getExtras();
         userName = findViewById(R.id.userName);
-        userName.addTextChangedListener(this);
+
+        mainActivity = new MainActivity();
+        if (mainActivity.getUser() == null) {
+            userName.setVisibility(View.GONE);
+        } else {
+            userName.addTextChangedListener(this);
+        }
         if (bundle != null) {
             vibrateBoolean = bundle.getBoolean(String.valueOf(R.string.vibrate));
             musicBoolean = bundle.getBoolean(String.valueOf(R.string.music));
@@ -50,7 +56,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         vibrate = findViewById(R.id.vibrateCheckbox);
         music = findViewById(R.id.musicCheckbox);
         backBtn = findViewById(R.id.backBtn);
-        signOutBtn = findViewById(R.id.signOutBtn);
 
         if (!vibrateBoolean) {
             vibrate.setChecked(false);
@@ -62,7 +67,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         backBtn.setOnClickListener(this);
         vibrate.setOnCheckedChangeListener(this);
         music.setOnCheckedChangeListener(this);
-        signOutBtn.setOnClickListener(this);
     }
 
     @Override
@@ -85,35 +89,12 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.backBtn:
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra(String.valueOf(R.string.vibrate), vibrateBoolean);
-                intent.putExtra(String.valueOf(R.string.music), musicBoolean);
-                intent.putExtra("name", userName.getText().toString());
-                setResult(Activity.RESULT_OK, intent);
-                finish();
-                break;
-            case R.id.signOutBtn:
-                signOut();
-                break;
-        }
-    }
-
-    private void signOut() {
-        FirebaseAuth.getInstance().signOut();
-        signOutBtn.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        user = getInstance().getCurrentUser();
-        if (user == null) {
-            signOutBtn.setVisibility(View.GONE);
-        } else {
-            signOutBtn.setVisibility(View.VISIBLE);
-        }
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra(String.valueOf(R.string.vibrate), vibrateBoolean);
+        intent.putExtra(String.valueOf(R.string.music), musicBoolean);
+        intent.putExtra("name", userName.getText().toString());
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -40,16 +42,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView gameOverTitle;
     @BindView(R.id.score)
     TextView highestScoreText;
-    @BindView(R.id.playBtn)
-    ImageView play;
-    @BindView(R.id.helpBtn)
-    ImageView help;
-    @BindView(R.id.highestScoreBtn)
-    ImageView highestScore;
-    @BindView(R.id.settingsBtn)
-    ImageView settings;
     @BindView(R.id.googleBtn)
-    ImageView google;
+    ImageView googleSignIn;
+    @BindView(R.id.signOutBtn)
+    ImageView googleSignOut;
 
 
     @Override
@@ -62,26 +58,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0).edit().putInt("highestScore", 0).apply();*/
     }
 
-    private void initGoogle() {
-        //Handles the design
-        customLayout = new AuthMethodPickerLayout
-                .Builder(R.layout.activity_main)
-                .setGoogleButtonId(R.id.googleBtn)
-                .build();
-    }
-
     private void signIn() {
         //Starts the algorithm
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
                 .setIsSmartLockEnabled(true)
-                .setAuthMethodPickerLayout(customLayout)
                 .setAvailableProviders(Arrays.asList(
                         new AuthUI.IdpConfig.GoogleBuilder().build()))
                 .build(), RC_SIGN_IN);
     }
 
     @Override
-    @OnClick({R.id.playBtn, R.id.helpBtn, R.id.exitBtn, R.id.highestScoreBtn, R.id.settingsBtn, R.id.googleBtn})
+    @OnClick({R.id.playBtn, R.id.helpBtn, R.id.exitBtn, R.id.highestScoreBtn, R.id.settingsBtn, R.id.googleBtn, R.id.signOutBtn})
     public void onClick(View v) {
         ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(20);
         switch (v.getId()) {
@@ -93,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.googleBtn:
                 signIn();
+                break;
+            case R.id.signOutBtn:
+                signOut();
                 break;
             case R.id.helpBtn:
                 startActivity(new Intent(getApplicationContext(), HelpActivity.class));
@@ -114,6 +104,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+        googleSignIn.setVisibility(View.VISIBLE);
+        googleSignOut.setVisibility(View.GONE);
+        user = getInstance().getCurrentUser();
+        if (user == null)
+            Log.e(TAG, "user is null");
+        else
+            Log.e(TAG, "user is NOT null");
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //TODO - super has added check if function still good
@@ -121,13 +122,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (requestCode == RC_SIGN_IN) {
             user = getInstance().getCurrentUser();
-            play.setVisibility(View.VISIBLE);
-            help.setVisibility(View.VISIBLE);
-            highestScore.setVisibility(View.VISIBLE);
-            settings.setVisibility(View.VISIBLE);
-            google.setVisibility(View.GONE);
+            if (user == null)
+                Log.e(TAG, "user is null");
+            else
+                Log.e(TAG, "user is NOT null");
+            googleSignIn.setVisibility(View.GONE);
+            googleSignOut.setVisibility(View.VISIBLE);
         }
 
+
+        //GameActivity Request
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 gameOverTitle.setVisibility(View.VISIBLE);
@@ -135,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, pref.getInt(getString(R.string.highestScore), 0))));
                 if (localUser.getScore() < pref.getInt(getString(R.string.highestScore), 0)) {
                     localUser.setScore(pref.getInt(getString(R.string.highestScore), 0));
-                    setUserDB();
+                    if (user != null)
+                        setUserDB();
                 }
             }
         }
@@ -144,18 +149,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 localUser.setVibrateSettings(data.getBooleanExtra(String.valueOf(R.string.vibrate), true));
                 localUser.setMusicSettings(data.getBooleanExtra(String.valueOf(R.string.music), true));
                 localUser.setName(data.getStringExtra("name"));
-                setUserDB();
+                if (user != null)
+                    setUserDB();
             }
         }
         if (requestCode == 4) {
             localUser.setName(data.getStringExtra("name"));
-            setUserDB();
+            if (user != null)
+                setUserDB();
         }
     }
 
 
-    public User getLocalUser() {
-        return localUser;
+    public FirebaseUser getUser() {
+        return user;
     }
 
     public void setUserDB() {
@@ -183,7 +190,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addOnSuccessListener(documentSnapshot -> {
                             localUser = documentSnapshot.toObject(User.class);
                             if (localUser == null) {
-                                localUser = new User(user.getUid(), user.getDisplayName(), 0, true, true);
+                                localUser.setId(user.getUid());
+                                localUser.setName(user.getDisplayName());
                                 setUserDB();
                             }
                             if (localUser.getName().isEmpty()) {
@@ -202,19 +210,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         user = getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
+        if (user == null)
+            Log.e(TAG, "user is null");
+        else
+            Log.e(TAG, "user is NOT null");
         if (user == null) {
-            play.setVisibility(View.GONE);
-            help.setVisibility(View.GONE);
-            highestScore.setVisibility(View.GONE);
-            settings.setVisibility(View.GONE);
-            google.setVisibility(View.VISIBLE);
-            initGoogle();
+            localUser = new User();
+            localUser.setVibrateSettings(true);
+            localUser.setMusicSettings(true);
+            localUser.setScore(0);
+            googleSignIn.setVisibility(View.VISIBLE);
+            googleSignOut.setVisibility(View.GONE);
         } else {
-            play.setVisibility(View.VISIBLE);
-            help.setVisibility(View.VISIBLE);
-            highestScore.setVisibility(View.VISIBLE);
-            settings.setVisibility(View.VISIBLE);
-            google.setVisibility(View.GONE);
+            googleSignIn.setVisibility(View.GONE);
+            googleSignOut.setVisibility(View.VISIBLE);
             getUserFromDB();
         }
     }
