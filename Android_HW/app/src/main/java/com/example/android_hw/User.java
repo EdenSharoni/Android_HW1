@@ -11,18 +11,28 @@ public class User implements Serializable {
     private int score;
     private boolean vibrateSettings;
     private boolean musicSettings;
-
+    private int vibrationNumber;
 
     public User() {
     }
 
-    public User(String id, String name, int score, boolean vibrateSettings, boolean musicSettings) {
+    public User(String id, String name, int score, boolean vibrateSettings, boolean musicSettings, int vibrationNumber) {
         this.id = id;
         this.name = name;
         this.score = score;
         this.vibrateSettings = vibrateSettings;
         this.musicSettings = musicSettings;
+        this.vibrationNumber = vibrationNumber;
     }
+
+    public void setVibrationNumber(int vibrationNumber) {
+        this.vibrationNumber = vibrationNumber;
+    }
+
+    public int getVibrationNumber() {
+        return vibrationNumber;
+    }
+
 
     public void setVibrateSettings(boolean vibrateSettings) {
         this.vibrateSettings = vibrateSettings;

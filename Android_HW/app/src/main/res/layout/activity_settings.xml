@@ -32,6 +32,31 @@
         android:text="Vibrate: "
         android:textSize="20dp" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <SeekBar
+            android:id="@+id/vibrateSeekBar"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:progress="80"
+            android:progressDrawable="@drawable/progress"
+            android:thumb="@drawable/thumb" />
+
+        <TextView
+            android:id="@+id/seekBarProcess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="80"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
+    </LinearLayout>
+
     <CheckBox
         android:id="@+id/musicCheckbox"
         android:layout_width="wrap_content"

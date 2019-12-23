@@ -101,6 +101,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
             } else {
                 gameActivity.getPlayer().hit();
             }
+            this.setVisibility(GONE);
         }
     }
 

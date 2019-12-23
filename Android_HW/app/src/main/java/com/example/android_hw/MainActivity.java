@@ -46,7 +46,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView googleSignIn;
     @BindView(R.id.signOutBtn)
     ImageView googleSignOut;
-
+    @BindView(R.id.playBtn)
+    ImageView play;
+    @BindView(R.id.helpBtn)
+    ImageView help;
+    @BindView(R.id.highestScoreBtn)
+    ImageView highestScore;
+    @BindView(R.id.settingsBtn)
+    ImageView settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +61,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        db = FirebaseFirestore.getInstance();
+
+        user = getInstance().getCurrentUser();
+
+        if (user == null)
+            Log.e(TAG, "Start: user is null");
+        else
+            Log.e(TAG, "Start: user is NOT null");
+        if (user == null) {
+            localUser = new User();
+            localUser.setVibrateSettings(true);
+            localUser.setMusicSettings(true);
+            localUser.setScore(0);
+            localUser.setVibrationNumber(400);
+            googleSignIn.setVisibility(View.VISIBLE);
+            googleSignOut.setVisibility(View.GONE);
+        } else {
+            play.setEnabled(false);
+            help.setEnabled(false);
+            highestScore.setEnabled(false);
+            settings.setEnabled(false);
+            settings.setEnabled(false);
+
+            googleSignIn.setVisibility(View.GONE);
+            googleSignOut.setVisibility(View.VISIBLE);
+            getUserFromDB();
+        }
         /*set highest score to 0
         getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0).edit().putInt("highestScore", 0).apply();*/
     }
@@ -76,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                 intent.putExtra(String.valueOf(R.string.vibrate), localUser.isVibrateSettings());
                 intent.putExtra(String.valueOf(R.string.music), localUser.isMusicSettings());
+                intent.putExtra(getString(R.string.vibrationNumber), localUser.getVibrationNumber());
                 startActivityForResult(intent, 1);
                 break;
             case R.id.googleBtn:
@@ -92,9 +127,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 highestScoreFragment.show(getSupportFragmentManager(), TAG);
                 break;
             case R.id.settingsBtn:
+                if (getUser() == null)
+                    Log.e(TAG, "Settings: user is null");
+                else
+                    Log.e(TAG, "Settings: user is NOT null");
                 Intent intent2 = new Intent(getApplicationContext(), SettingsActivity.class);
                 intent2.putExtra(String.valueOf(R.string.vibrate), localUser.isVibrateSettings());
                 intent2.putExtra(String.valueOf(R.string.music), localUser.isMusicSettings());
+                intent2.putExtra(getString(R.string.vibrationNumber), localUser.getVibrationNumber());
                 intent2.putExtra("name", localUser.getName());
                 startActivityForResult(intent2, 2);
                 break;
@@ -123,9 +163,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == RC_SIGN_IN) {
             user = getInstance().getCurrentUser();
             if (user == null)
-                Log.e(TAG, "user is null");
+                Log.e(TAG, "Google sign in: user is null");
             else
-                Log.e(TAG, "user is NOT null");
+                Log.e(TAG, "Google sign in: user is NOT null");
             googleSignIn.setVisibility(View.GONE);
             googleSignOut.setVisibility(View.VISIBLE);
         }
@@ -144,11 +184,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+
+        //Settings Request
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
                 localUser.setVibrateSettings(data.getBooleanExtra(String.valueOf(R.string.vibrate), true));
                 localUser.setMusicSettings(data.getBooleanExtra(String.valueOf(R.string.music), true));
                 localUser.setName(data.getStringExtra("name"));
+                localUser.setVibrationNumber(data.getIntExtra(getString(R.string.vibrationNumber), 80));
                 if (user != null)
                     setUserDB();
             }
@@ -190,9 +233,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addOnSuccessListener(documentSnapshot -> {
                             localUser = documentSnapshot.toObject(User.class);
                             if (localUser == null) {
+                                Log.e(TAG, "new User");
+                                localUser = new User();
+                                localUser.setVibrateSettings(true);
+                                localUser.setMusicSettings(true);
+                                localUser.setScore(0);
                                 localUser.setId(user.getUid());
                                 localUser.setName(user.getDisplayName());
+                                localUser.setVibrationNumber(400);
                                 setUserDB();
+                            } else {
+                                play.setEnabled(true);
+                                help.setEnabled(true);
+                                highestScore.setEnabled(true);
+                                settings.setEnabled(true);
+                                settings.setEnabled(true);
                             }
                             if (localUser.getName().isEmpty()) {
                                 startActivityForResult(new Intent(getApplicationContext(), PopUpNameActivity.class), 4);
@@ -207,24 +262,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
         pref = getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0);
         highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, pref.getInt(getString(R.string.highestScore), 0))));
-
-        user = getInstance().getCurrentUser();
-        db = FirebaseFirestore.getInstance();
-        if (user == null)
-            Log.e(TAG, "user is null");
-        else
-            Log.e(TAG, "user is NOT null");
-        if (user == null) {
-            localUser = new User();
-            localUser.setVibrateSettings(true);
-            localUser.setMusicSettings(true);
-            localUser.setScore(0);
-            googleSignIn.setVisibility(View.VISIBLE);
-            googleSignOut.setVisibility(View.GONE);
-        } else {
-            googleSignIn.setVisibility(View.GONE);
-            googleSignOut.setVisibility(View.VISIBLE);
-            getUserFromDB();
-        }
     }
 }

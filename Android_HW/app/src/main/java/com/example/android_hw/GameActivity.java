@@ -34,6 +34,7 @@ public class GameActivity extends AppCompatActivity {
     private boolean pauseIsGame = false;
     private boolean vibrate;
     private boolean music;
+    private int vibrationNumber;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +49,7 @@ public class GameActivity extends AppCompatActivity {
         if (bundle != null) {
             vibrate = bundle.getBoolean(String.valueOf(R.string.vibrate));
             music = bundle.getBoolean(String.valueOf(R.string.music));
+            vibrationNumber = bundle.getInt(getString(R.string.vibrationNumber));
         } else {
             vibrate = true;
             music = true;
@@ -241,6 +243,6 @@ public class GameActivity extends AppCompatActivity {
 
     public void Vibrate() {
         if (vibrate)
-            ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
+            ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(vibrationNumber * 5);
     }
 }
