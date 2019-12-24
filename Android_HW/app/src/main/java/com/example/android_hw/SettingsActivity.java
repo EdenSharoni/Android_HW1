@@ -58,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             vibrateSeekBar.setProgress(localUser.getVibrationNumber());
             seekBarProcess.setText(String.valueOf(vibrateSeekBar.getProgress()));
         } else {
+            localUser = new User();
             vibrateBoolean = true;
             musicBoolean = true;
             userName.setText("");
@@ -104,11 +105,13 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        localUser.setVibrateSettings(vibrateBoolean);
-        localUser.setMusicSettings(musicBoolean);
-        localUser.setName(userName.getText().toString());
-        localUser.setVibrationNumber(vibrateSeekBar.getProgress());
-        intent.putExtra(getString(R.string.localUser), localUser);
+        if (localUser != null) {
+            localUser.setVibrateSettings(vibrateBoolean);
+            localUser.setMusicSettings(musicBoolean);
+            localUser.setName(userName.getText().toString());
+            localUser.setVibrationNumber(vibrateSeekBar.getProgress());
+            intent.putExtra(getString(R.string.localUser), localUser);
+        }
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
