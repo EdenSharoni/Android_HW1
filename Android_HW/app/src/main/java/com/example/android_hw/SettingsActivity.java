@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -16,11 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import butterknife.OnTextChanged;
 
 import static com.google.firebase.auth.FirebaseAuth.getInstance;
 
@@ -49,7 +43,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         backBtn = findViewById(R.id.backBtn);
         userName = findViewById(R.id.userName);
 
-
         if (getInstance().getCurrentUser() == null) {
             userName.setVisibility(View.GONE);
         } else {
@@ -61,20 +54,16 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             localUser = (User) bundle.get("local User");
             vibrateBoolean = localUser.isVibrateSettings();
             musicBoolean = localUser.isMusicSettings();
-            vibrateSeekBar.setProgress(localUser.getVibrationNumber());
             userName.setText(localUser.getName());
+            vibrateSeekBar.setProgress(localUser.getVibrationNumber());
+            seekBarProcess.setText(String.valueOf(vibrateSeekBar.getProgress()));
         } else {
             vibrateBoolean = true;
             musicBoolean = true;
-            vibrateSeekBar.setProgress(80);
             userName.setText("");
+            vibrateSeekBar.setProgress(80);
+            seekBarProcess.setText("80");
         }
-
-        vibrateBoolean = localUser.isVibrateSettings();
-        musicBoolean = localUser.isMusicSettings();
-        userName.setText(localUser.getName());
-
-        seekBarProcess.setText(String.valueOf(vibrateSeekBar.getProgress()));
 
         if (!vibrateBoolean) {
             vibrate.setChecked(false);
@@ -94,28 +83,21 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.equals(vibrate)) {
-            if (buttonView.isChecked()) {
-                vibrateBoolean = true;
-            } else {
-                vibrateBoolean = false;
-            }
             if (vibrate.isChecked()) {
+                vibrateBoolean = true;
                 if (vibrateSeekBar.getProgress() == 0) {
                     vibrateSeekBar.setProgress(80);
                 }
                 seekBarProcess.setVisibility(View.VISIBLE);
                 vibrateSeekBar.setVisibility(View.VISIBLE);
-            } else if (!vibrate.isChecked()) {
+            } else {
+                vibrateBoolean = false;
                 seekBarProcess.setVisibility(View.GONE);
                 vibrateSeekBar.setVisibility(View.GONE);
             }
         }
         if (buttonView.equals(music)) {
-            if (buttonView.isChecked()) {
-                musicBoolean = true;
-            } else {
-                musicBoolean = false;
-            }
+            musicBoolean = music.isChecked();
         }
     }
 
