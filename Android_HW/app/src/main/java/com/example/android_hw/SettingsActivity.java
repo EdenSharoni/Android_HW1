@@ -54,7 +54,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         }
 
         if (bundle != null) {
-            localUser = (User) bundle.get("local User");
+            localUser = (User) bundle.get(getString(R.string.localUser));
             userName.setText(localUser.getName());
             vibrateSeekBar.setProgress(localUser.getVibrationNumber());
             seekBarProcess.setText(String.valueOf(vibrateSeekBar.getProgress()));

@@ -69,11 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else
             Log.e(TAG, "Start: user is NOT null");
         if (user == null) {
-            localUser = new User();
-            localUser.setVibrateSettings(true);
-            localUser.setMusicSettings(true);
-            localUser.setScore(0);
-            localUser.setVibrationNumber(80);
+            localUser = new User(null, null, 0, true, true, 80);
+
             googleSignIn.setVisibility(View.VISIBLE);
             googleSignOut.setVisibility(View.GONE);
         } else {
@@ -126,12 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 highestScoreFragment.show(getSupportFragmentManager(), TAG);
                 break;
             case R.id.settingsBtn:
-                if (getUser() == null)
-                    Log.e(TAG, "Settings: user is null");
-                else
-                    Log.e(TAG, "Settings: user is NOT null");
                 Intent intent2 = new Intent(getApplicationContext(), SettingsActivity.class);
-                Log.e(TAG, "Main: VibrationNumber: " + localUser.getVibrationNumber());
                 intent2.putExtra(getString(R.string.localUser), localUser);
                 startActivityForResult(intent2, 2);
                 break;
@@ -157,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //TODO - super has added check if function still good
         super.onActivityResult(requestCode, resultCode, data);
 
+        //Google Request
         if (requestCode == RC_SIGN_IN) {
             user = getInstance().getCurrentUser();
             if (user == null)
@@ -198,15 +191,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
-    public FirebaseUser getUser() {
-        return user;
-    }
-
-    public User getLocalUser() {
-        return localUser;
-    }
-
     public void setUserDB() {
 
         db.collection("Users")
@@ -233,13 +217,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             localUser = documentSnapshot.toObject(User.class);
                             if (localUser == null) {
                                 Log.e(TAG, "new User");
-                                localUser = new User();
-                                localUser.setVibrateSettings(true);
-                                localUser.setMusicSettings(true);
-                                localUser.setScore(0);
-                                localUser.setId(user.getUid());
-                                localUser.setName(user.getDisplayName());
-                                localUser.setVibrationNumber(80);
+                                localUser = new User(user.getUid(), user.getDisplayName(), 0, true, true, 80);
                                 setUserDB();
                             } else {
                                 play.setEnabled(true);
@@ -254,7 +232,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                 );
     }
-
 
     @Override
     protected void onStart() {
