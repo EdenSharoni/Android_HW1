@@ -31,17 +31,17 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     private ImageView backBtn;
     private boolean vibrateBoolean;
     private boolean musicBoolean;
-    private int vibrationNumber;
-    private FirebaseUser user;
     private EditText userName;
     private SeekBar vibrateSeekBar;
     private TextView seekBarProcess;
+    private User localUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Bundle bundle = getIntent().getExtras();
+
         vibrateSeekBar = findViewById(R.id.vibrateSeekBar);
         seekBarProcess = findViewById(R.id.seekBarProcess);
         vibrate = findViewById(R.id.vibrateCheckbox);
@@ -50,27 +50,31 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         userName = findViewById(R.id.userName);
 
 
-        user = getInstance().getCurrentUser();
-
-        if (user == null) {
+        if (getInstance().getCurrentUser() == null) {
             userName.setVisibility(View.GONE);
         } else {
             userName.setVisibility(View.VISIBLE);
             userName.addTextChangedListener(this);
         }
+
         if (bundle != null) {
-            vibrateBoolean = bundle.getBoolean(String.valueOf(R.string.vibrate));
-            musicBoolean = bundle.getBoolean(String.valueOf(R.string.music));
-            userName.setText(bundle.getString("name"));
-            vibrationNumber = bundle.getInt(getString(R.string.vibrationNumber));
+            localUser = (User) bundle.get("local User");
+            vibrateBoolean = localUser.isVibrateSettings();
+            musicBoolean = localUser.isMusicSettings();
+            vibrateSeekBar.setProgress(localUser.getVibrationNumber());
+            userName.setText(localUser.getName());
         } else {
             vibrateBoolean = true;
             musicBoolean = true;
-            vibrationNumber = 80;
+            vibrateSeekBar.setProgress(80);
+            userName.setText("");
         }
 
-        vibrateSeekBar.setProgress(vibrationNumber);
-        seekBarProcess.setText(Integer.toString(vibrationNumber));
+        vibrateBoolean = localUser.isVibrateSettings();
+        musicBoolean = localUser.isMusicSettings();
+        userName.setText(localUser.getName());
+
+        seekBarProcess.setText(String.valueOf(vibrateSeekBar.getProgress()));
 
         if (!vibrateBoolean) {
             vibrate.setChecked(false);
@@ -118,10 +122,11 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.putExtra(String.valueOf(R.string.vibrate), vibrateBoolean);
-        intent.putExtra(String.valueOf(R.string.music), musicBoolean);
-        intent.putExtra(getString(R.string.vibrationNumber), Integer.parseInt(seekBarProcess.getText().toString()));
-        intent.putExtra("name", userName.getText().toString());
+        localUser.setVibrateSettings(vibrateBoolean);
+        localUser.setMusicSettings(musicBoolean);
+        localUser.setName(userName.getText().toString());
+        localUser.setVibrationNumber(vibrateSeekBar.getProgress());
+        intent.putExtra(getString(R.string.localUser), localUser);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

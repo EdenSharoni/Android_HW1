@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SharedPreferences pref;
     private FirebaseUser user;
     private FirebaseFirestore db;
-    private AuthMethodPickerLayout customLayout;
     private User localUser;
 
     @BindView(R.id.gameOverTitle)
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             localUser.setVibrateSettings(true);
             localUser.setMusicSettings(true);
             localUser.setScore(0);
-            localUser.setVibrationNumber(400);
+            localUser.setVibrationNumber(80);
             googleSignIn.setVisibility(View.VISIBLE);
             googleSignOut.setVisibility(View.GONE);
         } else {
@@ -132,10 +131,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else
                     Log.e(TAG, "Settings: user is NOT null");
                 Intent intent2 = new Intent(getApplicationContext(), SettingsActivity.class);
-                intent2.putExtra(String.valueOf(R.string.vibrate), localUser.isVibrateSettings());
-                intent2.putExtra(String.valueOf(R.string.music), localUser.isMusicSettings());
-                intent2.putExtra(getString(R.string.vibrationNumber), localUser.getVibrationNumber());
-                intent2.putExtra("name", localUser.getName());
+                Log.e(TAG, "Main: VibrationNumber: " + localUser.getVibrationNumber());
+                intent2.putExtra(getString(R.string.localUser), localUser);
                 startActivityForResult(intent2, 2);
                 break;
             case R.id.exitBtn:
@@ -188,10 +185,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Settings Request
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
-                localUser.setVibrateSettings(data.getBooleanExtra(String.valueOf(R.string.vibrate), true));
-                localUser.setMusicSettings(data.getBooleanExtra(String.valueOf(R.string.music), true));
-                localUser.setName(data.getStringExtra("name"));
-                localUser.setVibrationNumber(data.getIntExtra(getString(R.string.vibrationNumber), 80));
+                localUser = (User) data.getExtras().get(getString(R.string.localUser));
+                Log.e(TAG, "onActivityResult: VibrationNumber: " + localUser.getVibrationNumber());
                 if (user != null)
                     setUserDB();
             }
@@ -206,6 +201,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public FirebaseUser getUser() {
         return user;
+    }
+
+    public User getLocalUser() {
+        return localUser;
     }
 
     public void setUserDB() {
@@ -240,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 localUser.setScore(0);
                                 localUser.setId(user.getUid());
                                 localUser.setName(user.getDisplayName());
-                                localUser.setVibrationNumber(400);
+                                localUser.setVibrationNumber(80);
                                 setUserDB();
                             } else {
                                 play.setEnabled(true);
