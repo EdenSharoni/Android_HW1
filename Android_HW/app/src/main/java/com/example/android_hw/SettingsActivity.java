@@ -23,8 +23,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     private CheckBox vibrate;
     private CheckBox music;
     private ImageView backBtn;
-    private boolean vibrateBoolean;
-    private boolean musicBoolean;
     private EditText userName;
     private SeekBar vibrateSeekBar;
     private TextView seekBarProcess;
@@ -34,15 +32,20 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        findById();
+        getBundleAndGetUser();
+        setOnClick();
+    }
+
+    private void setOnClick() {
+        vibrateSeekBar.setOnSeekBarChangeListener(this);
+        backBtn.setOnClickListener(this);
+        vibrate.setOnCheckedChangeListener(this);
+        music.setOnCheckedChangeListener(this);
+    }
+
+    private void getBundleAndGetUser() {
         Bundle bundle = getIntent().getExtras();
-
-        vibrateSeekBar = findViewById(R.id.vibrateSeekBar);
-        seekBarProcess = findViewById(R.id.seekBarProcess);
-        vibrate = findViewById(R.id.vibrateCheckbox);
-        music = findViewById(R.id.musicCheckbox);
-        backBtn = findViewById(R.id.backBtn);
-        userName = findViewById(R.id.userName);
-
         if (getInstance().getCurrentUser() == null) {
             userName.setVisibility(View.GONE);
         } else {
@@ -52,53 +55,53 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
         if (bundle != null) {
             localUser = (User) bundle.get("local User");
-            vibrateBoolean = localUser.isVibrateSettings();
-            musicBoolean = localUser.isMusicSettings();
             userName.setText(localUser.getName());
             vibrateSeekBar.setProgress(localUser.getVibrationNumber());
             seekBarProcess.setText(String.valueOf(vibrateSeekBar.getProgress()));
         } else {
             localUser = new User();
-            vibrateBoolean = true;
-            musicBoolean = true;
             userName.setText("");
             vibrateSeekBar.setProgress(80);
             seekBarProcess.setText("80");
         }
 
-        if (!vibrateBoolean) {
+        if (!localUser.isVibrateSettings()) {
             vibrate.setChecked(false);
             vibrateSeekBar.setVisibility(View.GONE);
             seekBarProcess.setVisibility(View.GONE);
         }
-        if (!musicBoolean) {
+        if (!localUser.isMusicSettings()) {
             music.setChecked(false);
         }
+    }
 
-        vibrateSeekBar.setOnSeekBarChangeListener(this);
-        backBtn.setOnClickListener(this);
-        vibrate.setOnCheckedChangeListener(this);
-        music.setOnCheckedChangeListener(this);
+    private void findById() {
+        vibrateSeekBar = findViewById(R.id.vibrateSeekBar);
+        seekBarProcess = findViewById(R.id.seekBarProcess);
+        vibrate = findViewById(R.id.vibrateCheckbox);
+        music = findViewById(R.id.musicCheckbox);
+        backBtn = findViewById(R.id.backBtn);
+        userName = findViewById(R.id.userName);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.equals(vibrate)) {
             if (vibrate.isChecked()) {
-                vibrateBoolean = true;
+                localUser.setVibrateSettings(true);
                 if (vibrateSeekBar.getProgress() == 0) {
                     vibrateSeekBar.setProgress(80);
                 }
                 seekBarProcess.setVisibility(View.VISIBLE);
                 vibrateSeekBar.setVisibility(View.VISIBLE);
             } else {
-                vibrateBoolean = false;
+                localUser.setVibrateSettings(false);
                 seekBarProcess.setVisibility(View.GONE);
                 vibrateSeekBar.setVisibility(View.GONE);
             }
         }
         if (buttonView.equals(music)) {
-            musicBoolean = music.isChecked();
+            localUser.setMusicSettings(music.isChecked());
         }
     }
 
@@ -106,10 +109,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     public void onClick(View v) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         if (localUser != null) {
-            localUser.setVibrateSettings(vibrateBoolean);
-            localUser.setMusicSettings(musicBoolean);
-            localUser.setName(userName.getText().toString());
-            localUser.setVibrationNumber(vibrateSeekBar.getProgress());
             intent.putExtra(getString(R.string.localUser), localUser);
         }
         setResult(Activity.RESULT_OK, intent);
@@ -130,12 +129,15 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     public void afterTextChanged(Editable s) {
         if (userName.getText().toString().isEmpty()) {
             Toast.makeText(getApplicationContext(), "please fill name", Toast.LENGTH_LONG).show();
+        } else {
+            localUser.setName(userName.getText().toString());
         }
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         seekBarProcess.setText(String.valueOf(progress));
+        localUser.setVibrationNumber(vibrateSeekBar.getProgress());
         if (progress == 0) {
             vibrate.setChecked(false);
         }
