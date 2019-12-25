@@ -16,35 +16,40 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
+
 import static com.google.firebase.auth.FirebaseAuth.getInstance;
 
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, TextWatcher, SeekBar.OnSeekBarChangeListener {
     private static final String TAG = SettingsActivity.class.getSimpleName();
-    private CheckBox vibrate;
-    private CheckBox music;
-    private ImageView backBtn;
-    private EditText userName;
-    private SeekBar vibrateSeekBar;
-    private TextView seekBarProcess;
-    private User localUser;
+
+    @BindView(R.id.vibrateCheckbox)
+    CheckBox vibrate;
+    @BindView(R.id.musicCheckbox)
+    CheckBox music;
+    @BindView(R.id.userName)
+    EditText userName;
+    @BindView(R.id.vibrateSeekBar)
+    SeekBar vibrateSeekBar;
+    @BindView(R.id.seekBarProcess)
+    TextView seekBarProcess;
+
+    User localUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        findById();
-        getBundleAndGetUser();
-        setOnClick();
+        ButterKnife.bind(this);
+        initSettings();
     }
 
-    private void setOnClick() {
+    private void initSettings() {
         vibrateSeekBar.setOnSeekBarChangeListener(this);
-        backBtn.setOnClickListener(this);
-        vibrate.setOnCheckedChangeListener(this);
-        music.setOnCheckedChangeListener(this);
-    }
-
-    private void getBundleAndGetUser() {
         Bundle bundle = getIntent().getExtras();
         if (getInstance().getCurrentUser() == null) {
             userName.setVisibility(View.GONE);
@@ -75,16 +80,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         }
     }
 
-    private void findById() {
-        vibrateSeekBar = findViewById(R.id.vibrateSeekBar);
-        seekBarProcess = findViewById(R.id.seekBarProcess);
-        vibrate = findViewById(R.id.vibrateCheckbox);
-        music = findViewById(R.id.musicCheckbox);
-        backBtn = findViewById(R.id.backBtn);
-        userName = findViewById(R.id.userName);
-    }
-
     @Override
+    @OnCheckedChanged({R.id.vibrateCheckbox, R.id.musicCheckbox})
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.equals(vibrate)) {
             if (vibrate.isChecked()) {
@@ -106,9 +103,12 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     }
 
     @Override
+    @OnClick(R.id.saveBtn)
     public void onClick(View v) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         if (localUser != null) {
+            if (!userName.getText().toString().isEmpty())
+                localUser.setName(userName.getText().toString());
             intent.putExtra(getString(R.string.localUser), localUser);
         }
         setResult(Activity.RESULT_OK, intent);
@@ -116,21 +116,22 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     }
 
     @Override
+    @OnTextChanged(R.id.userName)
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
     }
 
     @Override
+    @OnTextChanged(R.id.userName)
     public void onTextChanged(CharSequence s, int start, int before, int count) {
 
     }
 
     @Override
+    @OnTextChanged(R.id.userName)
     public void afterTextChanged(Editable s) {
         if (userName.getText().toString().isEmpty()) {
             Toast.makeText(getApplicationContext(), "please fill name", Toast.LENGTH_LONG).show();
-        } else {
-            localUser.setName(userName.getText().toString());
         }
     }
 

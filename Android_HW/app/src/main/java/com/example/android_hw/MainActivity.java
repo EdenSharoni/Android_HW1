@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -181,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+
+        //Name Text
         if (requestCode == 4) {
             localUser.setName(data.getStringExtra("name"));
             if (user != null)
@@ -189,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void setUserDB() {
-
         db.collection("Users")
                 .document(user.getUid())
                 .set(localUser).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -200,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                //TODO
+                Toast.makeText(getApplicationContext(), getString(R.string.error_saving_data), Toast.LENGTH_LONG);
             }
         });
     }
