@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     private void initSettings() {
         vibrateSeekBar.setOnSeekBarChangeListener(this);
-        Bundle bundle = getIntent().getExtras();
+
         if (getInstance().getCurrentUser() == null) {
             userName.setVisibility(View.GONE);
         } else {
@@ -56,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             userName.addTextChangedListener(this);
         }
 
+        Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             localUser = (User) bundle.get(getString(R.string.localUser));
             userName.setText(localUser.getName());

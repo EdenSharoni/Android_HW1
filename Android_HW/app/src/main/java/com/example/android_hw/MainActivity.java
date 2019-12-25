@@ -132,8 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startGame() {
         intent = new Intent(getApplicationContext(), GameActivity.class);
-        intent.putExtra(String.valueOf(R.string.music), localUser.isMusicSettings());
-        intent.putExtra(getString(R.string.vibrationNumber), localUser.getVibrationNumber());
+        intent.putExtra(getString(R.string.localUser), localUser);
         startActivityForResult(intent, 1);
     }
 
@@ -184,9 +183,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //Name Text
         if (requestCode == 4) {
-            localUser.setName(data.getStringExtra("name"));
-            if (user != null)
-                setUserDB();
+            if (resultCode == RESULT_OK) {
+                localUser.setName(data.getStringExtra("name"));
+                if (user != null)
+                    setUserDB();
+            }
         }
     }
 

@@ -3,7 +3,6 @@ package com.example.android_hw;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -32,9 +31,7 @@ public class GameActivity extends AppCompatActivity {
     private Player player;
     private Score scoreText;
     private boolean pauseIsGame = false;
-    private boolean vibrate;
-    private boolean music;
-    private int vibrationNumber;
+    private User localUser;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,14 +43,15 @@ public class GameActivity extends AppCompatActivity {
     private void initGame() {
 
         Bundle bundle = getIntent().getExtras();
+
         if (bundle != null) {
-            vibrate = bundle.getBoolean(String.valueOf(R.string.vibrate));
-            music = bundle.getBoolean(String.valueOf(R.string.music));
-            vibrationNumber = bundle.getInt(getString(R.string.vibrationNumber));
+            localUser = (User) bundle.get(getString(R.string.localUser));
         } else {
-            vibrate = true;
-            music = true;
+            localUser = new User();
+            localUser.setMusicSettings(true);
+            localUser.setVibrationNumber(80);
         }
+
 
         //Setup main layout
         frameLayoutManager = new FrameLayout(this);
@@ -68,7 +66,7 @@ public class GameActivity extends AppCompatActivity {
         frameLayoutManager.addView(scoreText);
 
         //Play music
-        if (music) {
+        if (localUser.isMusicSettings()) {
             mediaPlayer = MediaPlayer.create(this, R.raw.music);
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
@@ -177,7 +175,7 @@ public class GameActivity extends AppCompatActivity {
     public void EndGame() {
         pauseIsGame = true;
         scoreText.setHighestScoreEndGame();
-        if (music)
+        if (localUser.isMusicSettings())
             mediaPlayer.stop();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         setResult(Activity.RESULT_OK, intent);
@@ -203,7 +201,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         pauseIsGame = true;
-        if (music)
+        if (localUser.isMusicSettings())
             mediaPlayer.pause();
         super.onStop();
     }
@@ -211,7 +209,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         pauseIsGame = false;
-        if (music)
+        if (localUser.isMusicSettings())
             mediaPlayer.start();
         tickEndlessly();
         super.onResume();
@@ -242,7 +240,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void Vibrate() {
-        if (vibrate)
-            ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(vibrationNumber * 5);
+        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(localUser.getVibrationNumber() * 5);
     }
 }
