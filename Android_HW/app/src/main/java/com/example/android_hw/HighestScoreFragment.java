@@ -80,6 +80,7 @@ public class HighestScoreFragment extends DialogFragment {
 
                                 TableRow tableRow = new TableRow(getActivity());
                                 tableRow.setLayoutParams(tableParams);
+
                                 ImageView player = new ImageView(getActivity());
                                 player.setLayoutParams(rowParams);
                                 player.setImageResource(R.drawable.player1);
