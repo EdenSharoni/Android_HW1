@@ -22,7 +22,6 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     @OnClick(R.id.backBtn)
     public void onClick(View v) {
-        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(20);
         finish();
     }
 }

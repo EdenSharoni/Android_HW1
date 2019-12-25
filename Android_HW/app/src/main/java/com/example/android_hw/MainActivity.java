@@ -1,10 +1,8 @@
 package com.example.android_hw;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -74,11 +71,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             googleSignIn.setVisibility(View.VISIBLE);
             googleSignOut.setVisibility(View.GONE);
         } else {
-            play.setEnabled(false);
-            help.setEnabled(false);
-            highestScore.setEnabled(false);
-            settings.setEnabled(false);
-            settings.setEnabled(false);
+            handleButtons(false);
+
 
             googleSignIn.setVisibility(View.GONE);
             googleSignOut.setVisibility(View.VISIBLE);
@@ -100,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     @OnClick({R.id.playBtn, R.id.helpBtn, R.id.exitBtn, R.id.highestScoreBtn, R.id.settingsBtn, R.id.googleBtn, R.id.signOutBtn})
     public void onClick(View v) {
-        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(20);
         switch (v.getId()) {
             case R.id.playBtn:
                 Intent intent = new Intent(getApplicationContext(), GameActivity.class);
@@ -158,6 +151,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e(TAG, "Google sign in: user is NOT null");
             googleSignIn.setVisibility(View.GONE);
             googleSignOut.setVisibility(View.VISIBLE);
+            if (user != null)
+                getUserFromDB();
         }
 
 
@@ -180,8 +175,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (resultCode == RESULT_OK) {
                 localUser = (User) data.getExtras().get(getString(R.string.localUser));
                 Log.e(TAG, "onActivityResult: VibrationNumber: " + localUser.getVibrationNumber());
-                if (user != null)
+                if (user != null) {
+                    handleButtons(false);
                     setUserDB();
+                }
             }
         }
         if (requestCode == 4) {
@@ -198,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .set(localUser).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-
+                handleButtons(true);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -219,18 +216,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Log.e(TAG, "new User");
                                 localUser = new User(user.getUid(), user.getDisplayName(), 0, true, true, 80);
                                 setUserDB();
-                            } else {
-                                play.setEnabled(true);
-                                help.setEnabled(true);
-                                highestScore.setEnabled(true);
-                                settings.setEnabled(true);
-                                settings.setEnabled(true);
                             }
+                            handleButtons(true);
                             if (localUser.getName().isEmpty()) {
                                 startActivityForResult(new Intent(getApplicationContext(), PopUpNameActivity.class), 4);
                             }
                         }
                 );
+    }
+
+    private void handleButtons(boolean bool) {
+        play.setEnabled(bool);
+        help.setEnabled(bool);
+        highestScore.setEnabled(bool);
+        settings.setEnabled(bool);
     }
 
     @Override
