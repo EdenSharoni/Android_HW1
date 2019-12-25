@@ -3,7 +3,6 @@ package com.example.android_hw;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseUser user;
     private FirebaseFirestore db;
     private User localUser;
+    private Intent intent;
 
     @BindView(R.id.gameOverTitle)
     ImageView gameOverTitle;
@@ -62,23 +62,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         user = getInstance().getCurrentUser();
 
-        if (user == null)
-            Log.e(TAG, "Start: user is null");
-        else
-            Log.e(TAG, "Start: user is NOT null");
         if (user == null) {
             localUser = new User(null, null, 0, true, true, 80);
-
             googleSignIn.setVisibility(View.VISIBLE);
             googleSignOut.setVisibility(View.GONE);
         } else {
             handleButtons(false);
-
-
             googleSignIn.setVisibility(View.GONE);
             googleSignOut.setVisibility(View.VISIBLE);
             getUserFromDB();
         }
+
         /*set highest score to 0
         getApplicationContext().getSharedPreferences(getString(R.string.MyPref), 0).edit().putInt("highestScore", 0).apply();*/
     }
@@ -97,11 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.playBtn:
-                Intent intent = new Intent(getApplicationContext(), GameActivity.class);
-                intent.putExtra(String.valueOf(R.string.vibrate), localUser.isVibrateSettings());
-                intent.putExtra(String.valueOf(R.string.music), localUser.isMusicSettings());
-                intent.putExtra(getString(R.string.vibrationNumber), localUser.getVibrationNumber());
-                startActivityForResult(intent, 1);
+                startGame();
                 break;
             case R.id.googleBtn:
                 signIn();
@@ -110,16 +100,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 signOut();
                 break;
             case R.id.helpBtn:
-                startActivity(new Intent(getApplicationContext(), HelpActivity.class));
+                showHelp();
                 break;
             case R.id.highestScoreBtn:
-                HighestScoreFragment highestScoreFragment = new HighestScoreFragment();
-                highestScoreFragment.show(getSupportFragmentManager(), TAG);
+                showHighestScore();
                 break;
             case R.id.settingsBtn:
-                Intent intent2 = new Intent(getApplicationContext(), SettingsActivity.class);
-                intent2.putExtra(getString(R.string.localUser), localUser);
-                startActivityForResult(intent2, 2);
+                settingsActivity();
                 break;
             case R.id.exitBtn:
                 finish();
@@ -127,35 +114,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void showHelp() {
+        intent = new Intent(getApplicationContext(), HelpActivity.class);
+        startActivity(intent);
+    }
+
+    private void showHighestScore() {
+        HighestScoreFragment highestScoreFragment = new HighestScoreFragment();
+        highestScoreFragment.show(getSupportFragmentManager(), TAG);
+    }
+
+    private void settingsActivity() {
+        intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        intent.putExtra(getString(R.string.localUser), localUser);
+        startActivityForResult(intent, 2);
+    }
+
+    private void startGame() {
+        intent = new Intent(getApplicationContext(), GameActivity.class);
+        intent.putExtra(String.valueOf(R.string.vibrate), localUser.isVibrateSettings());
+        intent.putExtra(String.valueOf(R.string.music), localUser.isMusicSettings());
+        intent.putExtra(getString(R.string.vibrationNumber), localUser.getVibrationNumber());
+        startActivityForResult(intent, 1);
+    }
+
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         googleSignIn.setVisibility(View.VISIBLE);
         googleSignOut.setVisibility(View.GONE);
         user = getInstance().getCurrentUser();
-        if (user == null)
-            Log.e(TAG, "user is null");
-        else
-            Log.e(TAG, "user is NOT null");
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //TODO - super has added check if function still good
         super.onActivityResult(requestCode, resultCode, data);
 
         //Google Request
         if (requestCode == RC_SIGN_IN) {
             user = getInstance().getCurrentUser();
-            if (user == null)
-                Log.e(TAG, "Google sign in: user is null");
-            else
-                Log.e(TAG, "Google sign in: user is NOT null");
             googleSignIn.setVisibility(View.GONE);
             googleSignOut.setVisibility(View.VISIBLE);
             if (user != null)
                 getUserFromDB();
         }
-
 
         //GameActivity Request
         if (requestCode == 1) {
@@ -175,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
                 localUser = (User) data.getExtras().get(getString(R.string.localUser));
-                Log.e(TAG, "onActivityResult: VibrationNumber: " + localUser.getVibrationNumber());
                 if (user != null) {
                     handleButtons(false);
                     setUserDB();
@@ -215,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addOnSuccessListener(documentSnapshot -> {
                             localUser = documentSnapshot.toObject(User.class);
                             if (localUser == null) {
-                                Log.e(TAG, "new User");
                                 localUser = new User(user.getUid(), user.getDisplayName(), 0, true, true, 80);
                                 setUserDB();
                             }

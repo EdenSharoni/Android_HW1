@@ -38,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     @BindView(R.id.seekBarProcess)
     TextView seekBarProcess;
 
-    User localUser;
+    private User localUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
