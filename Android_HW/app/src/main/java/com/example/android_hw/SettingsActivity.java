@@ -27,8 +27,6 @@ import static com.google.firebase.auth.FirebaseAuth.getInstance;
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, TextWatcher, SeekBar.OnSeekBarChangeListener {
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
-    @BindView(R.id.vibrateCheckbox)
-    CheckBox vibrate;
     @BindView(R.id.musicCheckbox)
     CheckBox music;
     @BindView(R.id.userName)
@@ -70,41 +68,34 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             seekBarProcess.setText("80");
         }
 
-        if (!localUser.isVibrateSettings()) {
-            vibrate.setChecked(false);
-            vibrateSeekBar.setVisibility(View.GONE);
-            seekBarProcess.setVisibility(View.GONE);
-        }
         if (!localUser.isMusicSettings()) {
             music.setChecked(false);
         }
     }
 
     @Override
-    @OnCheckedChanged({R.id.vibrateCheckbox, R.id.musicCheckbox})
+    @OnCheckedChanged(R.id.musicCheckbox)
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (buttonView.equals(vibrate)) {
-            if (vibrate.isChecked()) {
-                localUser.setVibrateSettings(true);
-                if (vibrateSeekBar.getProgress() == 0) {
-                    vibrateSeekBar.setProgress(80);
-                }
-                seekBarProcess.setVisibility(View.VISIBLE);
-                vibrateSeekBar.setVisibility(View.VISIBLE);
-            } else {
-                localUser.setVibrateSettings(false);
-                seekBarProcess.setVisibility(View.GONE);
-                vibrateSeekBar.setVisibility(View.GONE);
-            }
-        }
-        if (buttonView.equals(music)) {
-            localUser.setMusicSettings(music.isChecked());
-        }
+        localUser.setMusicSettings(music.isChecked());
     }
 
     @Override
-    @OnClick(R.id.saveBtn)
+    @OnClick({R.id.saveBtn, R.id.motionBtn, R.id.screenBtn})
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.motionBtn:
+                localUser.setControls(getString(R.string.motion));
+                break;
+            case R.id.screenBtn:
+                localUser.setControls(getString(R.string.screen));
+                break;
+            case R.id.saveBtn:
+                saveSettings();
+                break;
+        }
+    }
+
+    private void saveSettings() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         if (localUser != null) {
             if (!userName.getText().toString().isEmpty())
@@ -139,9 +130,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         seekBarProcess.setText(String.valueOf(progress));
         localUser.setVibrationNumber(vibrateSeekBar.getProgress());
-        if (progress == 0) {
-            vibrate.setChecked(false);
-        }
     }
 
     @Override

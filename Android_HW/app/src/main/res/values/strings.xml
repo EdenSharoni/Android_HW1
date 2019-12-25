@@ -13,4 +13,6 @@
     <string name="vibrationNumber">vibrationNumber</string>
     <string name="localUser">local User</string>
     <string name="error_saving_data">Error saving data</string>
+    <string name="screen">Screen</string>
+    <string name="motion">motion</string>
 </resources>

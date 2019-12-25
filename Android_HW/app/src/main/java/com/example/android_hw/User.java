@@ -9,20 +9,28 @@ public class User implements Serializable {
     private String id;
     private String name;
     private int score;
-    private boolean vibrateSettings;
     private boolean musicSettings;
     private int vibrationNumber;
+    private String controls;
 
     public User() {
     }
 
-    public User(String id, String name, int score, boolean vibrateSettings, boolean musicSettings, int vibrationNumber) {
+    public User(String id, String name, int score, boolean musicSettings, int vibrationNumber, String controls) {
         this.id = id;
         this.name = name;
         this.score = score;
-        this.vibrateSettings = vibrateSettings;
         this.musicSettings = musicSettings;
         this.vibrationNumber = vibrationNumber;
+        this.controls = controls;
+    }
+
+    public void setControls(String controls) {
+        this.controls = controls;
+    }
+
+    public String getControls() {
+        return controls;
     }
 
     public void setVibrationNumber(int vibrationNumber) {
@@ -33,17 +41,8 @@ public class User implements Serializable {
         return vibrationNumber;
     }
 
-
-    public void setVibrateSettings(boolean vibrateSettings) {
-        this.vibrateSettings = vibrateSettings;
-    }
-
     public void setMusicSettings(boolean musicSettings) {
         this.musicSettings = musicSettings;
-    }
-
-    public boolean isVibrateSettings() {
-        return vibrateSettings;
     }
 
     public boolean isMusicSettings() {

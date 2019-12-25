@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         user = getInstance().getCurrentUser();
 
         if (user == null) {
-            localUser = new User(null, null, 0, true, true, 80);
+            localUser = new User(null, null, 0, true, 80, getString(R.string.screen));
             googleSignIn.setVisibility(View.VISIBLE);
             googleSignOut.setVisibility(View.GONE);
         } else {
@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startGame() {
         intent = new Intent(getApplicationContext(), GameActivity.class);
-        intent.putExtra(String.valueOf(R.string.vibrate), localUser.isVibrateSettings());
         intent.putExtra(String.valueOf(R.string.music), localUser.isMusicSettings());
         intent.putExtra(getString(R.string.vibrationNumber), localUser.getVibrationNumber());
         startActivityForResult(intent, 1);
@@ -215,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addOnSuccessListener(documentSnapshot -> {
                             localUser = documentSnapshot.toObject(User.class);
                             if (localUser == null) {
-                                localUser = new User(user.getUid(), user.getDisplayName(), 0, true, true, 80);
+                                localUser = new User(user.getUid(), user.getDisplayName(), 0, true, 80, getString(R.string.screen));
                                 setUserDB();
                             }
                             handleButtons(true);
