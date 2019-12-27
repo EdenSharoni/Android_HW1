@@ -1,6 +1,7 @@
 package com.example.android_hw;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
@@ -17,6 +18,11 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     private GameActivity gameActivity;
     private boolean hitPlayer = false;
     public int imageID;
+    private ObjectAnimator scaleX;
+    private ObjectAnimator scaleY;
+    private AnimatorSet scale;
+    ;
+
 
     public Lego(GameActivity context) {
         super(context);
@@ -99,10 +105,21 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
             } else if (this instanceof Coin) {
                 gameActivity.getScore().superCoin();
             } else {
+                disappearAnimation();
                 gameActivity.getPlayer().hit();
             }
             this.setVisibility(GONE);
         }
+    }
+
+    private void disappearAnimation() {
+        scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.3f);
+        scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.3f);
+        scaleX.setDuration(100);
+        scaleY.setDuration(100);
+        scale = new AnimatorSet();
+        scale.play(scaleX).with(scaleY);
+        scale.start();
     }
 
     public boolean checkHit(Player player) {
