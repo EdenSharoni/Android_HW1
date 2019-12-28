@@ -69,6 +69,7 @@ public class GameActivity extends AppCompatActivity {
         if (localUser.isMusicSettings()) {
             mediaPlayer = MediaPlayer.create(this, R.raw.music);
             mediaPlayer.setLooping(true);
+            mediaPlayer.setVolume(0.5f, 0.5f);
             mediaPlayer.start();
         }
 
@@ -240,6 +241,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void Vibrate() {
-        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(localUser.getVibrationNumber() * 5);
+        if (localUser.getVibrationNumber() != 0)
+            ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(localUser.getVibrationNumber() * 5);
+    }
+
+    public User getLocalUser() {
+        return localUser;
     }
 }

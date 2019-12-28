@@ -5,6 +5,8 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
+import android.media.MediaPlayer;
+import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 
@@ -18,11 +20,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     private GameActivity gameActivity;
     private boolean hitPlayer = false;
     public int imageID;
-    private ObjectAnimator scaleX;
-    private ObjectAnimator scaleY;
-    private AnimatorSet scale;
-    ;
-
+    private MediaPlayer mediaPlayer;
 
     public Lego(GameActivity context) {
         super(context);
@@ -101,25 +99,58 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     public void onAnimationUpdate(ValueAnimator animation) {
         if (!hitPlayer && checkHit(gameActivity.getPlayer()) && !gameActivity.gameHasEnded()) {
             if (this instanceof SuperHead) {
+                if (gameActivity.getLocalUser().isMusicSettings()) {
+                    mediaPlayer = MediaPlayer.create(gameActivity.getApplicationContext(), R.raw.super_head);
+                    mediaPlayer.setLooping(false);
+                    mediaPlayer.start();
+                }
                 gameActivity.getPlayer().animatePlayer(this.getDrawable());
+                this.setVisibility(GONE);
             } else if (this instanceof Coin) {
+                if (gameActivity.getLocalUser().isMusicSettings()) {
+                    mediaPlayer = MediaPlayer.create(gameActivity.getApplicationContext(), R.raw.collect_coin);
+                    mediaPlayer.setLooping(false);
+                    mediaPlayer.start();
+                }
                 gameActivity.getScore().superCoin();
-            } else {
                 disappearAnimation();
+            } else {
                 gameActivity.getPlayer().hit();
+                this.setVisibility(GONE);
             }
-            this.setVisibility(GONE);
         }
     }
 
     private void disappearAnimation() {
-        scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.3f);
-        scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.3f);
-        scaleX.setDuration(100);
-        scaleY.setDuration(100);
-        scale = new AnimatorSet();
+        final Lego lego = this;
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 2.5f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 2.5f);
+        scaleX.setDuration(50);
+        scaleY.setDuration(50);
+        AnimatorSet scale = new AnimatorSet();
         scale.play(scaleX).with(scaleY);
         scale.start();
+        scale.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                lego.setVisibility(GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     public boolean checkHit(Player player) {
