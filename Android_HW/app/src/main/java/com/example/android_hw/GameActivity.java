@@ -32,6 +32,7 @@ public class GameActivity extends AppCompatActivity {
     private Score scoreText;
     private boolean pauseIsGame = false;
     private User localUser;
+    private long lastTime;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,12 +113,36 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        player.setX(x - ((float) getResources().getDrawable(R.drawable.red_lego).getMinimumHeight() / 2));
+        if (localUser.getControls().equals(getString(R.string.screen))) {
+            float x = event.getX();
+            player.setX(x - ((float) getResources().getDrawable(R.drawable.red_lego).getMinimumHeight() / 2));
+        }
         return super.onTouchEvent(event);
     }
 
+    private void runMotionControllerThread() {
+        new Thread(new Runnable() {
+            private float newX;
+
+            @Override
+            public void run() {
+                while (!pauseIsGame) {
+                    lastTime = System.currentTimeMillis();
+                    newX = player.updatePlayerPositionUsingMotionSensor(lastTime);
+                    player.post(new Runnable() {
+                        @Override
+                        // update player image view x position on UI thread
+                        public void run() {
+                            player.setX(newX);
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
     private void tickEndlessly() {
+        Log.e(TAG, "tickEndlessly: ");
         Handler mainLayout = new Handler();
         mainLayout.postDelayed(new Runnable() {
             @Override
@@ -147,7 +172,6 @@ public class GameActivity extends AppCompatActivity {
 
             if (i == legoCurrentPosition) {
                 int legoNumber = random.nextInt(10);
-                Log.e(TAG, "legoGame: " + legoNumber);
                 Lego lego;
                 //Random superHead
                 if (legoNumber == 5) {
@@ -201,6 +225,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        player.getOrientationData().pause();
         pauseIsGame = true;
         if (localUser.isMusicSettings())
             mediaPlayer.pause();
@@ -210,9 +235,13 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         pauseIsGame = false;
+        if (localUser.getControls().equals(getString(R.string.motion))) {
+            player.getOrientationData().register();
+            runMotionControllerThread();
+        }
         if (localUser.isMusicSettings())
             mediaPlayer.start();
-        tickEndlessly();
+        //tickEndlessly();
         super.onResume();
     }
 

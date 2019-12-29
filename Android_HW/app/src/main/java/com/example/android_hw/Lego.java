@@ -1,12 +1,14 @@
 package com.example.android_hw;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.util.Log;
+import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 
@@ -70,27 +72,14 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
         animY.setInterpolator(new LinearInterpolator());
         animY.addUpdateListener(this);
         animY.start();
-        animY.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
+        animY.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
                 if (!hitPlayer) {
                     gameActivity.getScore().updateHighestScore();
                 }
                 lego.setVisibility(GONE);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
     }
@@ -130,25 +119,11 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
         AnimatorSet scale = new AnimatorSet();
         scale.play(scaleX).with(scaleY);
         scale.start();
-        scale.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        scale.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
                 lego.setVisibility(GONE);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
     }
