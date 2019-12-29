@@ -199,12 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(Void aVoid) {
                 handleButtons(true);
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_saving_data), Toast.LENGTH_LONG);
-            }
-        });
+        }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getString(R.string.error_saving_data), Toast.LENGTH_LONG));
     }
 
 

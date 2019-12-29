@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,10 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     SeekBar vibrateSeekBar;
     @BindView(R.id.seekBarProcess)
     TextView seekBarProcess;
+    @BindView(R.id.screenBtn)
+    ImageView screenBtn;
+    @BindView(R.id.motionBtn)
+    ImageView motionBtn;
 
     private User localUser;
 
@@ -61,11 +66,17 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             userName.setText(localUser.getName());
             vibrateSeekBar.setProgress(localUser.getVibrationNumber());
             seekBarProcess.setText(String.valueOf(vibrateSeekBar.getProgress()));
+            if (localUser.getControls().equals(getString(R.string.screen))) {
+                screenBtn.setBackground(getDrawable(R.color.red));
+            } else {
+                motionBtn.setBackground(getDrawable(R.color.red));
+            }
         } else {
             localUser = new User();
             userName.setText("");
             vibrateSeekBar.setProgress(80);
             seekBarProcess.setText("80");
+            screenBtn.setBackground(getDrawable(R.color.red));
         }
 
         if (!localUser.isMusicSettings()) {
@@ -85,9 +96,13 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         switch (v.getId()) {
             case R.id.motionBtn:
                 localUser.setControls(getString(R.string.motion));
+                motionBtn.setBackground(getDrawable(R.color.red));
+                screenBtn.setBackground(getDrawable(R.color.fui_transparent));
                 break;
             case R.id.screenBtn:
                 localUser.setControls(getString(R.string.screen));
+                screenBtn.setBackground(getDrawable(R.color.red));
+                motionBtn.setBackground(getDrawable(R.color.fui_transparent));
                 break;
             case R.id.saveBtn:
                 saveSettings();

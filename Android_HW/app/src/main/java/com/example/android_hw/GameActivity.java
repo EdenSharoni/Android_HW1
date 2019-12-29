@@ -142,7 +142,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void tickEndlessly() {
-        Log.e(TAG, "tickEndlessly: ");
         Handler mainLayout = new Handler();
         mainLayout.postDelayed(new Runnable() {
             @Override
@@ -241,7 +240,7 @@ public class GameActivity extends AppCompatActivity {
         }
         if (localUser.isMusicSettings())
             mediaPlayer.start();
-        //tickEndlessly();
+        tickEndlessly();
         super.onResume();
     }
 
