@@ -129,6 +129,5 @@ public class HighestScoreFragment extends DialogFragment {
         linearLayoutManager.addView(tableLayout);
 
         ((LinearLayout) getView()).addView(linearLayoutManager);
-
     }
 }

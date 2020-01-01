@@ -29,39 +29,27 @@
         android:textColor="@color/black" />
 
     <ImageView
-        android:id="@+id/googleBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/google_btn" />
-
-    <ImageView
-        android:id="@+id/signOutBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/sign_out"
-        android:visibility="gone" />
-
-    <ImageView
         android:id="@+id/playBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/play_btn" />
+        android:background="@drawable/play_btn"
+        android:saveEnabled="false" />
 
     <ImageView
         android:id="@+id/helpBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@drawable/help_btn" />
+        android:background="@drawable/help_btn"
+        android:saveEnabled="false" />
 
     <ImageView
         android:id="@+id/highestScoreBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:saveEnabled="false"
         android:src="@drawable/highest_score_btn" />
 
     <ImageView
@@ -69,6 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:saveEnabled="false"
         android:src="@drawable/settings_btn" />
 
     <ImageView
