@@ -36,7 +36,7 @@ public class HighestScoreFragment extends DialogFragment {
     private FirebaseFirestore db;
     private List<DocumentSnapshot> myListOfDocuments;
     private int numberOfUsers;
-    private Map<User, Integer> unSortMap = new HashMap<User, Integer>();
+    private Map<User, Integer> unSortMap = new HashMap<>();
     private ArrayList<User> localUserArrayList = new ArrayList<>();
 
     @Nullable

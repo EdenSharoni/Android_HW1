@@ -1,6 +1,7 @@
 package com.example.android_hw;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
 import android.location.Address;
@@ -9,6 +10,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
