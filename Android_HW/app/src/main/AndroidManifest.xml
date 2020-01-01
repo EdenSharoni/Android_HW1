@@ -37,19 +37,28 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="map"></activity>
+            android:label="map"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".PopUpNameActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.CustomTheme" />
-        <activity android:name=".SettingsActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Player" />
-        <activity android:name=".HelpActivity" />
-        <activity android:name=".GameActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".HelpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GameActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category
+                    android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
     </application>
