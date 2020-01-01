@@ -13,27 +13,37 @@ public class User implements Serializable {
     private boolean musicSettings;
     private int vibrationNumber;
     private String controls;
-    private List<Address> address;
+    private double latitude;
+    private double longitude;
 
     public User() {
     }
 
-    public User(String id, String name, int score, boolean musicSettings, int vibrationNumber, String controls, List<Address> address) {
+    public User(String id, String name, int score, boolean musicSettings, int vibrationNumber, String controls, double latitude, double longitude) {
         this.id = id;
         this.name = name;
         this.score = score;
         this.musicSettings = musicSettings;
         this.vibrationNumber = vibrationNumber;
         this.controls = controls;
-        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public void setAddress(List<Address> address) {
-        this.address = address;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public List<Address> getAddress() {
-        return address;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public void setControls(String controls) {

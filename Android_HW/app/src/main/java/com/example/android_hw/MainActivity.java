@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Intent intent;
     protected LocationManager locationManager;
     protected LocationListener locationListener;
-    private String address;
     private List<Address> addresses;
     private Location myLocation;
     @BindView(R.id.gameOverTitle)
@@ -85,38 +84,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         user = getInstance().getCurrentUser();
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        myLocation = getLastKnownLocation();
-
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-        }
-
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
-        }
-
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
-        addresses = null;
-        try {
-            if (myLocation != null) {
-                addresses = geocoder.getFromLocation(myLocation.getLatitude(), myLocation.getLongitude(), 1);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (addresses == null) {
-            Log.e(TAG, "Waiting for Location");
         } else {
-            if (addresses.size() > 0) {
-                address = addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName();
-                Log.e(TAG, addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
-            }
+            getLocation();
         }
 
         if (user == null) {
-            localUser = new User(null, null, 0, true, 80, getString(R.string.screen), addresses);
+            localUser = new User(null, null, 0, true, 80, getString(R.string.screen), myLocation.getLatitude(), myLocation.getLongitude());
             googleSignIn.setVisibility(View.VISIBLE);
             googleSignOut.setVisibility(View.GONE);
         } else {
@@ -150,34 +125,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return bestLocation;
     }
 
-    private void requestGPSPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Permission needed")
-                    .setMessage("This permission is needed")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
-                        }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            }).create().show();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_GPS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.e(TAG, "PERMISSION GRANTED");
+                getLocation();
             } else {
                 Log.e(TAG, "PERMISSION GRANTED");
+            }
+        }
+    }
+
+    private void getLocation() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        myLocation = getLastKnownLocation();
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+        }
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        addresses = null;
+        try {
+            if (myLocation != null) {
+                addresses = geocoder.getFromLocation(myLocation.getLatitude(), myLocation.getLongitude(), 1);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses == null) {
+            Log.e(TAG, "Waiting for Location");
+        } else {
+            if (addresses.size() > 0) {
+                Log.e(TAG, addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
             }
         }
     }
@@ -333,12 +315,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addOnSuccessListener(documentSnapshot -> {
                             localUser = documentSnapshot.toObject(User.class);
                             if (localUser == null) {
-                                localUser = new User(user.getUid(), user.getDisplayName(), 0, true, 80, getString(R.string.screen), addresses);
+                                localUser = new User(user.getUid(), user.getDisplayName(), 0, true, 80, getString(R.string.screen), myLocation.getLatitude(), myLocation.getLongitude());
                                 setUserDB();
                             }
-                            handleButtons(true);
                             if (localUser.getName().isEmpty()) {
                                 startActivityForResult(new Intent(getApplicationContext(), PopUpNameActivity.class), 4);
+                            } else {
+                                handleButtons(true);
                             }
                         }
                 );
