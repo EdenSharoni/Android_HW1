@@ -36,7 +36,6 @@ public class HighestScoreFragment extends DialogFragment {
     private FirebaseFirestore db;
     private List<DocumentSnapshot> myListOfDocuments;
     private int numberOfUsers;
-    private HashMap<User, Integer> users = new HashMap<>();
     private Map<User, Integer> unSortMap = new HashMap<User, Integer>();
     private ArrayList<User> localUserArrayList = new ArrayList<>();
 
@@ -56,14 +55,9 @@ public class HighestScoreFragment extends DialogFragment {
                                 unSortMap.put(myListOfDocuments.get(i).toObject(User.class), myListOfDocuments.get(i).toObject(User.class).getScore());
                             }
 
-                            List<Map.Entry<User, Integer>> list = new LinkedList<Map.Entry<User, Integer>>(unSortMap.entrySet());
+                            List<Map.Entry<User, Integer>> list = new LinkedList<>(unSortMap.entrySet());
 
-                            Collections.sort(list, new Comparator<Map.Entry<User, Integer>>() {
-                                @Override
-                                public int compare(Map.Entry<User, Integer> o1, Map.Entry<User, Integer> o2) {
-                                    return o2.getValue().compareTo(o1.getValue());
-                                }
-                            });
+                            Collections.sort(list, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
                             for (Map.Entry<User, Integer> entry : list) {
                                 localUserArrayList.add(entry.getKey());

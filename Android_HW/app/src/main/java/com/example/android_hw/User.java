@@ -1,6 +1,10 @@
 package com.example.android_hw;
 
+import android.location.Address;
+import android.location.Location;
+
 import java.io.Serializable;
+import java.util.List;
 
 public class User implements Serializable {
     private String id;
@@ -9,17 +13,27 @@ public class User implements Serializable {
     private boolean musicSettings;
     private int vibrationNumber;
     private String controls;
+    private List<Address> address;
 
     public User() {
     }
 
-    public User(String id, String name, int score, boolean musicSettings, int vibrationNumber, String controls) {
+    public User(String id, String name, int score, boolean musicSettings, int vibrationNumber, String controls, List<Address> address) {
         this.id = id;
         this.name = name;
         this.score = score;
         this.musicSettings = musicSettings;
         this.vibrationNumber = vibrationNumber;
         this.controls = controls;
+        this.address = address;
+    }
+
+    public void setAddress(List<Address> address) {
+        this.address = address;
+    }
+
+    public List<Address> getAddress() {
+        return address;
     }
 
     public void setControls(String controls) {
