@@ -5,7 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class HighestScoreFragment extends DialogFragment {
+public class HighestScoreFragment extends Fragment {
     private final static String TAG = HighestScoreFragment.class.getSimpleName();
     private User localUser;
     private FirebaseFirestore db;
@@ -111,7 +114,7 @@ public class HighestScoreFragment extends DialogFragment {
             name.setTextSize(20);
 
             TextView comma = new TextView(getActivity());
-            comma.setText(", ");
+            comma.setText(", \t");
             comma.setTextSize(20);
 
             TextView score = new TextView(getActivity());
@@ -122,7 +125,19 @@ public class HighestScoreFragment extends DialogFragment {
             tableRow.addView(name);
             tableRow.addView(comma);
             tableRow.addView(score);
+            tableRow.setId(i);
+            tableRow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MapsActivity mapsActivity = (MapsActivity) getActivity();
+                    try {
+                        mapsActivity.setGoogleMaps(localUserArrayList.get(v.getId()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
+                }
+            });
             tableLayout.addView(tableRow);
         }
 

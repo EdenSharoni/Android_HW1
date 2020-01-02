@@ -65,7 +65,6 @@ public class GPSService {
     }
 
     private Location getLastKnownLocation(MainActivity context) {
-        locationManager = (LocationManager) context.getApplicationContext().getSystemService(context.LOCATION_SERVICE);
         List<String> providers = locationManager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
@@ -76,7 +75,7 @@ public class GPSService {
             if (l == null) {
                 continue;
             }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+            if (bestLocation == null) {
                 bestLocation = l;
             }
         }

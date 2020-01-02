@@ -1,5 +1,6 @@
 package com.example.android_hw;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -32,6 +33,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private User localUser;
     private List<Address> addresses;
     private String address;
+    private Geocoder geocoder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        geocoder = new Geocoder(this, Locale.getDefault());
         addresses = null;
         try {
             addresses = geocoder.getFromLocation(localUser.getLatitude(), localUser.getLongitude(), 1);
@@ -69,6 +71,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         mMap = googleMap;
         LatLng latLng = new LatLng(localUser.getLatitude(), localUser.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(latLng).title(address));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
+    }
+
+    public void setGoogleMaps(User user) throws IOException {
+        addresses = geocoder.getFromLocation(user.getLatitude(), user.getLongitude(), 1);
+        address = addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName();
+        LatLng latLng = new LatLng(user.getLatitude(), user.getLongitude());
         mMap.addMarker(new MarkerOptions().position(latLng).title(address));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
     }

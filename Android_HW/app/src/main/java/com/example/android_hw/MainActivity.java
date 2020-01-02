@@ -77,17 +77,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 user = mAuth.getCurrentUser();
-                                if (localUser == null) {
-                                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                                        Log.e(TAG, "local User is null");
-                                        localUser = new User(user.getUid(), "", 0, true, 80, getString(R.string.screen), gpsService.getMyLocation().getLatitude(), gpsService.getMyLocation().getLongitude());
-                                        setUserDB();
-                                    }
+                                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                                    localUser = new User(user.getUid(), "", 0, true, 80, getString(R.string.screen), gpsService.getMyLocation().getLatitude(), gpsService.getMyLocation().getLongitude());
+                                    setUserDB();
                                 }
                             }
                         }
                     });
-
         } else {
             Log.e(TAG, "user is not null");
             getUserFromDB();
@@ -128,17 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 settingsActivity();
                 break;
             case R.id.exitBtn:
-                intent = new Intent(getApplicationContext(), MapsActivity.class);
-                if (gpsService.getMyLocation() != null) {
-                    Log.e(TAG, "onClick: getMyLocation is not null");
-                    gpsService.getLocation(MainActivity.this);
-                    localUser.setLatitude(gpsService.getMyLocation().getLatitude());
-                    localUser.setLongitude(gpsService.getMyLocation().getLongitude());
-                    setUserDB();
-                }
-                intent.putExtra(getString(R.string.localUser), localUser);
-                startActivityForResult(intent, 5);
-                //finish();
+                finish();
                 break;
         }
     }
@@ -149,8 +135,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showHighestScore() {
-        HighestScoreFragment highestScoreFragment = new HighestScoreFragment();
-        highestScoreFragment.show(getSupportFragmentManager(), TAG);
+        intent = new Intent(getApplicationContext(), MapsActivity.class);
+        if (gpsService.getMyLocation() != null) {
+            Log.e(TAG, "onClick: getMyLocation is not null");
+            gpsService.getLocation(MainActivity.this);
+            localUser.setLatitude(gpsService.getMyLocation().getLatitude());
+            localUser.setLongitude(gpsService.getMyLocation().getLongitude());
+            setUserDB();
+        }
+        intent.putExtra(getString(R.string.localUser), localUser);
+        startActivityForResult(intent, 5);
     }
 
     private void settingsActivity() {
