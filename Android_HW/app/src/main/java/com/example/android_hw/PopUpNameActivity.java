@@ -15,6 +15,7 @@ public class PopUpNameActivity extends AppCompatActivity implements View.OnClick
 
     private Button done;
     private EditText name;
+    private User localUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,14 @@ public class PopUpNameActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_pop_up_name);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
+        Bundle bundle = getIntent().getExtras();
 
+        if (bundle != null) {
+            localUser = (User) bundle.get(getString(R.string.localUser));
+        } else {
+            localUser = new User();
+            localUser.setName("");
+        }
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
@@ -35,8 +43,9 @@ public class PopUpNameActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         if (!name.getText().toString().isEmpty()) {
+            localUser.setName(name.getText().toString());
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra("name", name.getText().toString());
+            intent.putExtra(getString(R.string.localUser), localUser);
             setResult(Activity.RESULT_OK, intent);
             finish();
         } else {

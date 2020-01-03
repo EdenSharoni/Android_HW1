@@ -8,7 +8,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -53,7 +52,6 @@ public class GameActivity extends AppCompatActivity {
             localUser.setVibrationNumber(80);
             localUser.setControls(getString(R.string.screen));
         }
-
 
         //Setup main layout
         frameLayoutManager = new FrameLayout(this);
@@ -203,6 +201,7 @@ public class GameActivity extends AppCompatActivity {
         if (localUser.isMusicSettings())
             mediaPlayer.stop();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra(getString(R.string.localUser), localUser);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

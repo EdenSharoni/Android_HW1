@@ -14,10 +14,12 @@ public class Score extends AppCompatTextView {
     private int highestScore = 0;
     private ObjectAnimator scoreAnimation;
     private int delayMillis = 400;
+    private GameActivity gameActivity;
 
     public Score(GameActivity context) {
         super(context);
-        pref = context.getApplicationContext().getSharedPreferences(getResources().getString(R.string.MyPref), 0);
+        this.gameActivity = context;
+        pref = gameActivity.getApplicationContext().getSharedPreferences(getResources().getString(R.string.MyPref), 0);
         setScore();
         setScoreAnimation();
     }
@@ -60,6 +62,10 @@ public class Score extends AppCompatTextView {
     public void setHighestScoreEndGame() {
         if (pref.getInt(getResources().getString(R.string.highestScore), -1) < highestScore) {
             pref.edit().putInt(getResources().getString(R.string.highestScore), highestScore).apply();
+            gameActivity.getLocalUser().setScore(highestScore);
+        }
+        else{
+            gameActivity.getLocalUser().setScore(pref.getInt(getResources().getString(R.string.highestScore), -1));
         }
     }
 

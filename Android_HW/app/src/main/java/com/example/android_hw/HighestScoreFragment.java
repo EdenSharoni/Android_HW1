@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -41,10 +42,15 @@ public class HighestScoreFragment extends Fragment {
     private int numberOfUsers;
     private Map<User, Integer> unSortMap = new HashMap<>();
     private ArrayList<User> localUserArrayList = new ArrayList<>();
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_highest_score, container, false);
+        progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
         db = FirebaseFirestore.getInstance();
         db.collection("Users")
                 .get()
@@ -76,7 +82,7 @@ public class HighestScoreFragment extends Fragment {
                     }
                 });
 
-        return inflater.inflate(R.layout.fragment_highest_score, container, false);
+        return view;
     }
 
     public void setXMLViewWithUsers() {
@@ -114,7 +120,7 @@ public class HighestScoreFragment extends Fragment {
             name.setTextSize(20);
 
             TextView comma = new TextView(getActivity());
-            comma.setText(", \t");
+            comma.setText("\t\t, \t\t");
             comma.setTextSize(20);
 
             TextView score = new TextView(getActivity());
@@ -144,5 +150,6 @@ public class HighestScoreFragment extends Fragment {
         linearLayoutManager.addView(tableLayout);
 
         ((LinearLayout) getView()).addView(linearLayoutManager);
+        progressBar.setVisibility(View.GONE);
     }
 }
