@@ -1,10 +1,6 @@
 package com.example.android_hw;
 
-import android.location.Address;
-import android.location.Location;
-
 import java.io.Serializable;
-import java.util.List;
 
 public class User implements Serializable {
     private String id;

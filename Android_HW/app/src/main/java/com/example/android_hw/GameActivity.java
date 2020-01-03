@@ -51,6 +51,7 @@ public class GameActivity extends AppCompatActivity {
             localUser = new User();
             localUser.setMusicSettings(true);
             localUser.setVibrationNumber(80);
+            localUser.setControls(getString(R.string.screen));
         }
 
 

@@ -7,8 +7,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
-import android.util.Log;
-import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 

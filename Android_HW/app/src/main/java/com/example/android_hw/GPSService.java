@@ -28,11 +28,7 @@ public class GPSService {
     private Location myLocation;
 
     public GPSService(MainActivity context) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
-        } else {
-            getLocation(context);
-        }
+        getLocation(context);
     }
 
     public void getLocation(MainActivity context) {
@@ -79,7 +75,6 @@ public class GPSService {
                 bestLocation = l;
             }
         }
-        Log.e(TAG, "Best Location: " + bestLocation);
         return bestLocation;
     }
 
