@@ -36,7 +36,7 @@ import static android.location.LocationManager.GPS_PROVIDER;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, LocationListener {
 
-    private final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
 
     private static final int REQUEST_GPS = 1;
     private final int GAME_REQUEST_CODE = 1;
@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
