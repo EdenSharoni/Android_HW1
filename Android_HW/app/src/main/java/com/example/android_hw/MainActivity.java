@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Intent intent;
     private FirebaseAuth mAuth;
     private Location myLocation;
+    private LocationManager locationManager;
 
     @BindView(R.id.gameOverTitle)
     ImageView gameOverTitle;
@@ -72,11 +73,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         handleButtons(false);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
@@ -90,8 +91,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_GPS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                finish();
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                locationManager.requestLocationUpdates(GPS_PROVIDER, 20000, 20f, this);
+                findUser();
             }
         }
     }
@@ -121,12 +125,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressBar.setVisibility(View.VISIBLE);
         db.collection("Users")
                 .document(user.getUid()).set(localUser).addOnSuccessListener(aVoid -> {
-                    progressBar.setVisibility(View.GONE);
-                    checkNameValid();
-                }).addOnFailureListener(e -> {
-                    progressBar.setVisibility(View.GONE);
-                    Log.e(TAG, getString(R.string.error_saving_data));
-                });
+            progressBar.setVisibility(View.GONE);
+            checkNameValid();
+        }).addOnFailureListener(e -> {
+            progressBar.setVisibility(View.GONE);
+            Log.e(TAG, getString(R.string.error_saving_data));
+        });
     }
 
     private void checkNameValid() {
@@ -228,13 +232,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void handleButtons(boolean bool) {
-        play.setEnabled(bool);
-        help.setEnabled(bool);
-        highestScore.setEnabled(bool);
-        settings.setEnabled(bool);
-    }
-
     @Override
     public void onLocationChanged(Location location) {
         myLocation = location;
@@ -264,5 +261,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setNegativeButton("No", (dialog, id) -> dialog.cancel());
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void handleButtons(boolean bool) {
+        play.setEnabled(bool);
+        help.setEnabled(bool);
+        highestScore.setEnabled(bool);
+        settings.setEnabled(bool);
     }
 }
