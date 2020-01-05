@@ -91,21 +91,17 @@ public class Player extends AppCompatImageView {
             @Override
             public void onRotation(float rx, float ry, float rz) {
                 if (rz > 1f) {
-                    context.getWindow().getDecorView().setBackgroundColor(Color.RED);
                     left = true;
                     right = false;
                 } else if (rz < -1f) {
-                    context.getWindow().getDecorView().setBackgroundColor(Color.BLUE);
                     left = false;
                     right = true;
                 }
                 if (left) {
-                    Log.e(TAG, "LEFT");
                     if (getX() < 0)
                         return;
                     setX(getX() - 200);
                 } else if (right) {
-                    Log.e(TAG, "RIGHT");
                     if (getX() > getResources().getDisplayMetrics().widthPixels - getResources().getDrawable(R.drawable.player1).getMinimumWidth())
                         return;
                     setX(getX() + 200);
