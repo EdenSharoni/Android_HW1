@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -37,11 +35,12 @@ import static android.location.LocationManager.GPS_PROVIDER;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, LocationListener {
 
     private static final String TAG = "MainActivity";
-
     private static final int REQUEST_GPS = 1;
-    private final int GAME_REQUEST_CODE = 1;
-    private final int SETTINGS_REQUEST_CODE = 2;
-    private final int POP_UP_NAME_REQUEST_CODE = 4;
+    private static final int GAME_REQUEST_CODE = 1;
+    private static final int SETTINGS_REQUEST_CODE = 2;
+    private static final int POP_UP_NAME_REQUEST_CODE = 3;
+    private static final int MIN_TIME = 20000;
+    private static final float MIN_DISTANCE = 20f;
 
     private FirebaseUser user;
     private FirebaseFirestore db;
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
         } else {
-            locationManager.requestLocationUpdates(GPS_PROVIDER, 20000, 20f, this);
+            locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
             findUser();
         }
     }
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                locationManager.requestLocationUpdates(GPS_PROVIDER, 20000, 20f, this);
+                locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
                 findUser();
             }
         }

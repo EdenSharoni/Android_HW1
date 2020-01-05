@@ -31,11 +31,13 @@ public class GameActivity extends AppCompatActivity {
     private Score scoreText;
     private boolean pauseIsGame = false;
     private User localUser;
-    private long lastTime;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+
         initGame();
         setContentView(frameLayoutManager);
     }
@@ -119,37 +121,13 @@ public class GameActivity extends AppCompatActivity {
         return super.onTouchEvent(event);
     }
 
-    private void runMotionControllerThread() {
-        new Thread(new Runnable() {
-            private float newX;
-
-            @Override
-            public void run() {
-                while (!pauseIsGame) {
-                    lastTime = System.currentTimeMillis();
-                    newX = player.updatePlayerPositionUsingMotionSensor(lastTime);
-                    player.post(new Runnable() {
-                        @Override
-                        // update player image view x position on UI thread
-                        public void run() {
-                            player.setX(newX);
-                        }
-                    });
-                }
-            }
-        }).start();
-    }
-
     private void tickEndlessly() {
         Handler mainLayout = new Handler();
-        mainLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!pauseIsGame) {
-                    tickEndlessly();
-                }
-                legoGame();
+        mainLayout.postDelayed(() -> {
+            if (!pauseIsGame) {
+                tickEndlessly();
             }
+            legoGame();
         }, scoreText.getDelayMillis());
     }
 
@@ -224,7 +202,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        player.getOrientationData().pause();
+        player.getGyroscope().unregister();
         pauseIsGame = true;
         if (localUser.isMusicSettings())
             mediaPlayer.pause();
@@ -233,10 +211,10 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        player.getGyroscope().register();
         pauseIsGame = false;
         if (localUser.getControls().equals(getString(R.string.motion))) {
-            player.getOrientationData().register();
-            runMotionControllerThread();
+            player.updatePlayerPositionUsingMotionSensor();
         }
         if (localUser.isMusicSettings())
             mediaPlayer.start();

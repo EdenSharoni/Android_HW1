@@ -16,11 +16,9 @@ import java.util.Random;
 
 public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUpdateListener {
 
-    private static final String TAG = Lego.class.getSimpleName();
     private GameActivity gameActivity;
     private boolean hitPlayer = false;
     public int imageID;
-    private MediaPlayer mediaPlayer;
 
     public Lego(GameActivity context) {
         super(context);
@@ -85,6 +83,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         if (!hitPlayer && checkHit(gameActivity.getPlayer()) && !gameActivity.gameHasEnded()) {
+            MediaPlayer mediaPlayer;
             if (this instanceof SuperHead) {
                 if (gameActivity.getLocalUser().isMusicSettings()) {
                     mediaPlayer = MediaPlayer.create(gameActivity.getApplicationContext(), R.raw.super_head);

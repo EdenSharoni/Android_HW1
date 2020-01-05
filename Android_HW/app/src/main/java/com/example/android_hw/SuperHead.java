@@ -3,8 +3,6 @@ package com.example.android_hw;
 import java.util.Random;
 
 public class SuperHead extends Lego {
-    private static final String TAG = SuperHead.class.getSimpleName();
-
     public SuperHead(GameActivity context) {
         super(context);
     }

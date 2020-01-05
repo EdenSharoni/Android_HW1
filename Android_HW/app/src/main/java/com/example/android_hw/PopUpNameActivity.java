@@ -1,7 +1,5 @@
 package com.example.android_hw;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,9 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class PopUpNameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button done;
     private EditText name;
     private User localUser;
 
@@ -35,7 +34,7 @@ public class PopUpNameActivity extends AppCompatActivity implements View.OnClick
         int height = dm.heightPixels;
 
         getWindow().setLayout((int) (width * (0.7)), (int) (height * 0.4));
-        done = findViewById(R.id.done);
+        Button done = findViewById(R.id.done);
         name = findViewById(R.id.name);
         done.setOnClickListener(this);
     }

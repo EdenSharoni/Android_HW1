@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -21,12 +22,16 @@ public class Player extends AppCompatImageView {
     private ObjectAnimator scaleX;
     private ObjectAnimator scaleY;
     private AnimatorSet scale;
-    private OrientationData orientationData;
+    private Gyroscope gyroscope;
+    private boolean left = false;
+    private boolean right = false;
+    private GameActivity context;
 
     public Player(GameActivity context) {
         super(context);
+        this.context = context;
+        gyroscope = new Gyroscope(context);
         setPlayer();
-        initOrientationData(context);
         this.gameActivity = context;
     }
 
@@ -35,14 +40,6 @@ public class Player extends AppCompatImageView {
         this.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         this.setX(Resources.getSystem().getDisplayMetrics().widthPixels / 2 - (getResources().getDrawable(R.drawable.player1).getMinimumWidth() / 2));
         this.setY(Resources.getSystem().getDisplayMetrics().heightPixels - getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight());
-    }
-
-    public OrientationData getOrientationData() {
-        return orientationData;
-    }
-
-    public void initOrientationData(GameActivity context) {
-        orientationData = new OrientationData(context);
     }
 
     public int getNum_lives() {
@@ -85,32 +82,35 @@ public class Player extends AppCompatImageView {
             gameActivity.EndGame();
     }
 
-    public float updatePlayerPositionUsingMotionSensor(long lastTime) {
-        float newX = 0;
-        if (gameActivity.getLocalUser().getControls().equals(gameActivity.getString(R.string.motion))) {
-            float endX = Resources.getSystem().getDisplayMetrics().widthPixels - this.getWidth();
-            if (lastTime < INIT_TIME) {
-                lastTime = INIT_TIME;
-            }
-            int elapsedTime = (int) (System.currentTimeMillis() - lastTime);
-            if (orientationData.getOrientation() != null && orientationData.getStartOrientation() != null) {
-                //float pitch = orientationData.getOrientation()[1] - orientationData.getStartOrientation()[1];
-                float roll = orientationData.getOrientation()[2] - orientationData.getStartOrientation()[2];
+    public Gyroscope getGyroscope() {
+        return gyroscope;
+    }
 
-                float xSpeed = 2 * roll * Resources.getSystem().getDisplayMetrics().widthPixels / 50f;
-                //Log.d(TAG, "updatePositionUsingMotionSensor: currentXSpeed = "+xSpeed);
-                //float ySpeed = pitch * Resources.getSystem().getDisplayMetrics().heightPixels / 50f;
-                //int changeInXPosition = (int)(this.getX() + Math.abs(xSpeed * elapsedTime));
-                float newPosition = this.getX() + xSpeed * elapsedTime;
-                if (newPosition < 0) {
-                    newX = 0;
-                } else if (newPosition > endX) {
-                    newX = endX;
-                } else {
-                    newX = newPosition;
+    public void updatePlayerPositionUsingMotionSensor() {
+        gyroscope.setListener(new Gyroscope.Listener() {
+            @Override
+            public void onRotation(float rx, float ry, float rz) {
+                if (rz > 1f) {
+                    context.getWindow().getDecorView().setBackgroundColor(Color.RED);
+                    left = true;
+                    right = false;
+                } else if (rz < -1f) {
+                    context.getWindow().getDecorView().setBackgroundColor(Color.BLUE);
+                    left = false;
+                    right = true;
+                }
+                if (left) {
+                    Log.e(TAG, "LEFT");
+                    if (getX() < 0)
+                        return;
+                    setX(getX() - 200);
+                } else if (right) {
+                    Log.e(TAG, "RIGHT");
+                    if (getX() > getResources().getDisplayMetrics().widthPixels - getResources().getDrawable(R.drawable.player1).getMinimumWidth())
+                        return;
+                    setX(getX() + 200);
                 }
             }
-        }
-        return newX;
+        });
     }
 }

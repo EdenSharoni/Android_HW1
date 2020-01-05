@@ -1,8 +1,6 @@
 package com.example.android_hw;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
