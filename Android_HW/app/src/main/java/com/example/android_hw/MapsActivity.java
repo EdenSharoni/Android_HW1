@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,7 +42,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
@@ -54,7 +54,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+        else{
+            Log.e(TAG, "mapFragment is null");
+        }
     }
 
     @Override
@@ -65,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             setGoogleMaps(localUser);
         } catch (IOException e) {
+            Toast.makeText(getApplicationContext(), "Failed to build map", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -75,6 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e(TAG, "Waiting for Location");
         } else if (addresses.size() > 0) {
             address = addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName();
+            Toast.makeText(getApplicationContext(), address, Toast.LENGTH_LONG).show();
         }
         latLng = new LatLng(user.getLatitude(), user.getLongitude());
         mMap.addMarker(new MarkerOptions().position(latLng).title(address));
