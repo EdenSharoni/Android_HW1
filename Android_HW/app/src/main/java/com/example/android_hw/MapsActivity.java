@@ -6,6 +6,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
@@ -59,6 +60,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         geocoder = new Geocoder(this, Locale.getDefault());
         addresses = null;
         mMap = googleMap;
+        if (mMap == null)
+            Log.e("TAG", "mMap is null" );
+        else{
+            Log.e("TAG", "mMap is NOT null");
+        }
         try {
             setGoogleMaps(localUser);
         } catch (IOException e) {
