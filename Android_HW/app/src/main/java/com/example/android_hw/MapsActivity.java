@@ -1,23 +1,14 @@
 package com.example.android_hw;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,13 +23,11 @@ import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private static final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
     private User localUser;
     private List<Address> addresses;
     private String address;
     private Geocoder geocoder;
-    private LatLng latLng;
     private Location location;
 
     @Override
@@ -86,7 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             address = addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName();
             Toast.makeText(getApplicationContext(), address, Toast.LENGTH_LONG).show();
         }
-        latLng = new LatLng(user.getLatitude(), user.getLongitude());
+        LatLng latLng = new LatLng(user.getLatitude(), user.getLongitude());
         mMap.addMarker(new MarkerOptions().position(latLng).title(address));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
     }

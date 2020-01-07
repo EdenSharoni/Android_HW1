@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView highestScore;
     @BindView(R.id.settingsBtn)
     ImageView settings;
+    @BindView(R.id.exitBtn)
+    ImageView exit;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
@@ -96,22 +98,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void findUser() {
         if (user == null) {
-            mAuth.signInAnonymously()
-                    .addOnCompleteListener(this, task -> {
-                        if (task.isSuccessful()) {
-                            user = mAuth.getCurrentUser();
-                            if (myLocation == null) {
-                                localUser = new User(user.getUid(), "", 0, true, 80, getString(R.string.screen), 0, 0);
-                            } else {
-                                localUser = new User(user.getUid(), "", 0, true, 80, getString(R.string.screen), myLocation.getLatitude(), myLocation.getLongitude());
-                            }
-                            highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, localUser.getScore())));
-                            setUserDB();
-                        }
-                    });
+            newUser();
         } else {
             getUserFromDB();
         }
+    }
+
+    private void newUser() {
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        user = mAuth.getCurrentUser();
+                        if (myLocation == null) {
+                            if (user != null) {
+                                localUser = new User(user.getUid(), "", 0, true, 80, getString(R.string.screen), 0, 0);
+                            }
+                        } else {
+                            if (user != null) {
+                                localUser = new User(user.getUid(), "", 0, true, 80, getString(R.string.screen), myLocation.getLatitude(), myLocation.getLongitude());
+                            }
+                        }
+                        highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, localUser.getScore())));
+                        setUserDB();
+                    }
+                });
     }
 
     public void setUserDB() {
@@ -257,6 +267,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         help.setEnabled(bool);
         highestScore.setEnabled(bool);
         settings.setEnabled(bool);
+
+        if (!bool) {
+            setButtonAlpha(0.8f);
+        } else {
+            setButtonAlpha(1f);
+        }
+    }
+
+    private void setButtonAlpha(float num) {
+        play.setAlpha(num);
+        help.setAlpha(num);
+        highestScore.setAlpha(num);
+        settings.setAlpha(num);
+        exit.setAlpha(num);
     }
 
     @Override
@@ -284,6 +308,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
-
 }

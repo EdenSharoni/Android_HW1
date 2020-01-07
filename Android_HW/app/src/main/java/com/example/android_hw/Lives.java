@@ -7,7 +7,6 @@ import androidx.appcompat.widget.AppCompatImageView;
 
 public class Lives extends AppCompatImageView {
 
-
     public Lives(Context context) {
         super(context);
         this.setImageResource(R.drawable.heart);

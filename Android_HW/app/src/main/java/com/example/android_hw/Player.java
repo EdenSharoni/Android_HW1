@@ -5,16 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
 public class Player extends AppCompatImageView {
 
-    private static final String TAG = Player.class.getSimpleName();
     private final int MAX_NUM_OF_LIVES = 3;
     private int num_lives = MAX_NUM_OF_LIVES;
     private GameActivity gameActivity;
@@ -84,25 +81,22 @@ public class Player extends AppCompatImageView {
     }
 
     public void updatePlayerPositionUsingMotionSensor() {
-        gyroscope.setListener(new Gyroscope.Listener() {
-            @Override
-            public void onRotation(float rx, float ry, float rz) {
-                if (rz > 1f) {
-                    left = true;
-                    right = false;
-                } else if (rz < -1f) {
-                    left = false;
-                    right = true;
-                }
-                if (left) {
-                    if (getX() < 0)
-                        return;
-                    setX(getX() - 200);
-                } else if (right) {
-                    if (getX() > getResources().getDisplayMetrics().widthPixels - getResources().getDrawable(R.drawable.player1).getMinimumWidth())
-                        return;
-                    setX(getX() + 200);
-                }
+        gyroscope.setListener((rx, ry, rz) -> {
+            if (rz > 1f) {
+                left = true;
+                right = false;
+            } else if (rz < -1f) {
+                left = false;
+                right = true;
+            }
+            if (left) {
+                if (getX() < 0)
+                    return;
+                setX(getX() - 200);
+            } else if (right) {
+                if (getX() > getResources().getDisplayMetrics().widthPixels - getResources().getDrawable(R.drawable.player1).getMinimumWidth())
+                    return;
+                setX(getX() + 200);
             }
         });
     }

@@ -25,7 +25,6 @@ import butterknife.OnTextChanged;
 import static com.google.firebase.auth.FirebaseAuth.getInstance;
 
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, TextWatcher, SeekBar.OnSeekBarChangeListener {
-    private static final String TAG = SettingsActivity.class.getSimpleName();
 
     @BindView(R.id.musicCheckbox)
     CheckBox music;
@@ -63,8 +62,10 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             localUser = (User) bundle.get(getString(R.string.localUser));
-            userName.setText(localUser.getName());
-            vibrateSeekBar.setProgress(localUser.getVibrationNumber());
+            if (localUser != null) {
+                userName.setText(localUser.getName());
+                vibrateSeekBar.setProgress(localUser.getVibrationNumber());
+            }
             seekBarProcess.setText(String.valueOf(vibrateSeekBar.getProgress()));
             if (localUser.getControls().equals(getString(R.string.screen))) {
                 screenBtn.setBackground(getDrawable(R.color.red));
@@ -75,7 +76,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             localUser = new User();
             userName.setText("");
             vibrateSeekBar.setProgress(80);
-            seekBarProcess.setText("80");
+            seekBarProcess.setText(vibrateSeekBar.getProgress());
             screenBtn.setBackground(getDrawable(R.color.red));
         }
 

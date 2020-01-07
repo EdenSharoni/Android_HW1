@@ -1,13 +1,6 @@
 package com.example.android_hw;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,25 +12,23 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class HighestScoreFragment extends Fragment {
-    private final static String TAG = HighestScoreFragment.class.getSimpleName();
-    private User localUser;
-    private FirebaseFirestore db;
+
     private List<DocumentSnapshot> myListOfDocuments;
     private int numberOfUsers;
     private Map<User, Integer> unSortMap = new HashMap<>();
@@ -51,15 +42,15 @@ public class HighestScoreFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(getString(R.string.users))
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        myListOfDocuments = task.getResult().getDocuments();
+                        myListOfDocuments = Objects.requireNonNull(task.getResult()).getDocuments();
 
                         for (int i = 0; i < myListOfDocuments.size(); i++) {
-                            unSortMap.put(myListOfDocuments.get(i).toObject(User.class), myListOfDocuments.get(i).toObject(User.class).getScore());
+                            unSortMap.put(Objects.requireNonNull(myListOfDocuments.get(i).toObject(User.class)), Objects.requireNonNull(myListOfDocuments.get(i).toObject(User.class)).getScore());
                         }
 
                         List<Map.Entry<User, Integer>> list = new LinkedList<>(unSortMap.entrySet());
@@ -82,7 +73,8 @@ public class HighestScoreFragment extends Fragment {
         return view;
     }
 
-    public void setXMLViewWithUsers() {
+    private void setXMLViewWithUsers() {
+
         LinearLayout linearLayoutManager = new LinearLayout(getActivity());
         linearLayoutManager.setOrientation(LinearLayout.VERTICAL);
         linearLayoutManager.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
@@ -103,14 +95,14 @@ public class HighestScoreFragment extends Fragment {
 
         for (int i = 0; i < numberOfUsers; i++) {
 
-            localUser = localUserArrayList.get(i);
+            User localUser = localUserArrayList.get(i);
 
             TableRow tableRow = new TableRow(getActivity());
             tableRow.setLayoutParams(tableParams);
 
             ImageView player = new ImageView(getActivity());
             player.setLayoutParams(rowParams);
-            player.setImageResource(R.drawable.player1);
+            player.setImageResource(setImage(i));
 
             TextView name = new TextView(getActivity());
             name.setText(localUser.getName());
@@ -129,24 +121,46 @@ public class HighestScoreFragment extends Fragment {
             tableRow.addView(comma);
             tableRow.addView(score);
             tableRow.setId(i);
-            tableRow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MapsActivity mapsActivity = (MapsActivity) getActivity();
-                    try {
+            tableRow.setOnClickListener(v -> {
+                MapsActivity mapsActivity = (MapsActivity) getActivity();
+                try {
+                    if (mapsActivity != null) {
                         mapsActivity.setGoogleMaps(localUserArrayList.get(v.getId()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+
             });
             tableLayout.addView(tableRow);
         }
 
         linearLayoutManager.addView(tableLayout);
 
-        ((LinearLayout) getView()).addView(linearLayoutManager);
+        ((LinearLayout) Objects.requireNonNull(getView())).addView(linearLayoutManager);
         progressBar.setVisibility(View.GONE);
+    }
+
+    private int setImage(int i) {
+        switch (i) {
+            case 1:
+                return R.drawable.player2;
+            case 2:
+                return R.drawable.player3;
+            case 3:
+                return R.drawable.player4;
+            case 4:
+                return R.drawable.player5;
+            case 5:
+                return R.drawable.player6;
+            case 6:
+                return R.drawable.player7;
+            case 7:
+                return R.drawable.player8;
+            case 8:
+                return R.drawable.player9;
+            default:
+                return R.drawable.player1;
+        }
     }
 }

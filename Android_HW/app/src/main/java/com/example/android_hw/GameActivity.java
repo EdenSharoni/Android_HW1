@@ -22,7 +22,6 @@ import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
 
-    private static final String TAG = GameActivity.class.getSimpleName();
     private FrameLayout frameLayoutManager;
     private LinearLayout heartsLinearLayout;
     private ArrayList<ImageView> hearts = new ArrayList<>();
@@ -32,12 +31,9 @@ public class GameActivity extends AppCompatActivity {
     private boolean pauseIsGame = false;
     private User localUser;
 
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
-
         initGame();
         setContentView(frameLayoutManager);
     }
