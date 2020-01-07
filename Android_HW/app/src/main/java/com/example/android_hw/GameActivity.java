@@ -57,7 +57,9 @@ public class GameActivity extends AppCompatActivity {
 
         //Setup Player
         player = new Player(this);
-        frameLayoutManager.addView(player);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+        frameLayoutManager.addView(player, params);
 
         //SetUp Score
         scoreText = new Score(this);

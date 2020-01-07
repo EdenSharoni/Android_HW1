@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.view.Gravity;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatImageView;
@@ -32,9 +33,6 @@ public class Player extends AppCompatImageView {
 
     private void setPlayer() {
         this.setImageResource(R.drawable.player1);
-        this.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        this.setX(Resources.getSystem().getDisplayMetrics().widthPixels / 2 - (getResources().getDrawable(R.drawable.player1).getMinimumWidth() / 2));
-        this.setY(Resources.getSystem().getDisplayMetrics().heightPixels - getResources().getDrawable(R.drawable.blue_lego).getMinimumHeight());
     }
 
     public int getNum_lives() {
