@@ -145,7 +145,7 @@ public class GameActivity extends AppCompatActivity {
             initLinearLayout(linearLayout);
 
             if (i == legoCurrentPosition) {
-                int legoNumber = random.nextInt(10);
+                int legoNumber = random.nextInt(20);
                 Lego lego;
                 //Random superHead
                 if (legoNumber == 5) {
