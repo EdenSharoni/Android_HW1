@@ -1,6 +1,7 @@
 package com.example.android_hw;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.Gravity;
@@ -14,7 +15,7 @@ public class Score extends AppCompatTextView {
     private int highestScore = 0;
     private ObjectAnimator scoreAnimation;
     private int delayMillis = 400;
-    private GameActivity gameActivity;
+    private Context gameActivity;
 
     public Score(GameActivity context) {
         super(context);
@@ -62,10 +63,10 @@ public class Score extends AppCompatTextView {
     public void setHighestScoreEndGame() {
         if (pref.getInt(getResources().getString(R.string.highestScore), -1) < highestScore) {
             pref.edit().putInt(getResources().getString(R.string.highestScore), highestScore).apply();
-            gameActivity.getLocalUser().setScore(highestScore);
+            ((GameActivity)gameActivity).getLocalUser().setScore(highestScore);
         }
         else{
-            gameActivity.getLocalUser().setScore(pref.getInt(getResources().getString(R.string.highestScore), -1));
+            ((GameActivity)gameActivity).getLocalUser().setScore(pref.getInt(getResources().getString(R.string.highestScore), -1));
         }
     }
 

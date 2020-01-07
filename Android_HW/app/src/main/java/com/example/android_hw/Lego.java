@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.view.animation.LinearInterpolator;
@@ -16,11 +17,11 @@ import java.util.Random;
 
 public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUpdateListener {
 
-    private GameActivity gameActivity;
+    private Context gameActivity;
     private boolean hitPlayer = false;
     public int imageID;
 
-    public Lego(GameActivity context) {
+    public Lego(Context context) {
         super(context);
         this.gameActivity = context;
         setLego();
@@ -73,7 +74,7 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 if (!hitPlayer) {
-                    gameActivity.getScore().updateHighestScore();
+                    ((GameActivity)gameActivity).getScore().updateHighestScore();
                 }
                 lego.setVisibility(GONE);
             }
@@ -82,26 +83,26 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        if (!hitPlayer && checkHit(gameActivity.getPlayer()) && !gameActivity.gameHasEnded()) {
+        if (!hitPlayer && checkHit(((GameActivity)gameActivity).getPlayer()) && !((GameActivity)gameActivity).gameHasEnded()) {
             MediaPlayer mediaPlayer;
             if (this instanceof SuperHead) {
-                if (gameActivity.getLocalUser().isMusicSettings()) {
+                if (((GameActivity)gameActivity).getLocalUser().isMusicSettings()) {
                     mediaPlayer = MediaPlayer.create(gameActivity.getApplicationContext(), R.raw.super_head);
                     mediaPlayer.setLooping(false);
                     mediaPlayer.start();
                 }
-                gameActivity.getPlayer().animatePlayer(this.getDrawable());
+                ((GameActivity)gameActivity).getPlayer().animatePlayer(this.getDrawable());
                 this.setVisibility(GONE);
             } else if (this instanceof Coin) {
-                if (gameActivity.getLocalUser().isMusicSettings()) {
+                if (((GameActivity)gameActivity).getLocalUser().isMusicSettings()) {
                     mediaPlayer = MediaPlayer.create(gameActivity.getApplicationContext(), R.raw.collect_coin);
                     mediaPlayer.setLooping(false);
                     mediaPlayer.start();
                 }
-                gameActivity.getScore().superCoin();
+                ((GameActivity)gameActivity).getScore().superCoin();
                 disappearAnimation();
             } else {
-                gameActivity.getPlayer().hit();
+                ((GameActivity)gameActivity).getPlayer().hit();
                 this.setVisibility(GONE);
             }
         }

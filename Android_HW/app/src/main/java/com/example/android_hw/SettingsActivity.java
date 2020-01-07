@@ -26,6 +26,7 @@ import static com.google.firebase.auth.FirebaseAuth.getInstance;
 
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, TextWatcher, SeekBar.OnSeekBarChangeListener {
 
+    private User localUser;
     @BindView(R.id.musicCheckbox)
     CheckBox music;
     @BindView(R.id.userName)
@@ -38,8 +39,6 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     ImageView screenBtn;
     @BindView(R.id.motionBtn)
     ImageView motionBtn;
-
-    private User localUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

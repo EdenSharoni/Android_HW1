@@ -12,7 +12,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/title" />
+        android:src="@drawable/title" />
 
     <ImageView
         android:id="@+id/gameOverTitle"
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/play_btn"
+        android:src="@drawable/play_btn"
         android:saveEnabled="false" />
 
     <ImageView
@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@drawable/help_btn"
+        android:src="@drawable/help_btn"
         android:saveEnabled="false" />
 
     <ImageView
@@ -65,13 +65,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@drawable/exit_btn" />
+        android:src="@drawable/exit_btn" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@drawable/eden_sharoni" />
+        android:src="@drawable/eden_sharoni" />
 
     <ProgressBar
         android:id="@+id/progressBar"

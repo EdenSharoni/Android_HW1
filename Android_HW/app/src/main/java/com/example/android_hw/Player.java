@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.widget.LinearLayout;
@@ -14,7 +15,7 @@ public class Player extends AppCompatImageView {
 
     private final int MAX_NUM_OF_LIVES = 3;
     private int num_lives = MAX_NUM_OF_LIVES;
-    private GameActivity gameActivity;
+    private Context gameActivity;
     private ObjectAnimator scaleX;
     private ObjectAnimator scaleY;
     private AnimatorSet scale;
@@ -52,7 +53,7 @@ public class Player extends AppCompatImageView {
 
         this.setImageDrawable(lego);
         ++num_lives;
-        gameActivity.addLife();
+        ((GameActivity) gameActivity).addLife();
         scale.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -69,11 +70,11 @@ public class Player extends AppCompatImageView {
     }
 
     public void hit() {
-        gameActivity.Vibrate();
-        gameActivity.removeLife();
+        ((GameActivity) gameActivity).Vibrate();
+        ((GameActivity) gameActivity).removeLife();
         --num_lives;
         if (num_lives == 0)
-            gameActivity.EndGame();
+            ((GameActivity) gameActivity).EndGame();
     }
 
     public Gyroscope getGyroscope() {

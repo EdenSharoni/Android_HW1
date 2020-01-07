@@ -24,12 +24,12 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/green_lego" />
+                android:src="@drawable/green_lego" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/green_lego" />
+                android:src="@drawable/green_lego" />
         </LinearLayout>
 
         <LinearLayout
@@ -42,12 +42,12 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/yellow_lego" />
+                android:src="@drawable/yellow_lego" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/yellow_lego" />
+                android:src="@drawable/yellow_lego" />
         </LinearLayout>
 
         <LinearLayout
@@ -60,12 +60,12 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/red_lego" />
+                android:src="@drawable/red_lego" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/red_lego" />
+                android:src="@drawable/red_lego" />
 
         </LinearLayout>
 
