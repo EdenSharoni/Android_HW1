@@ -32,7 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.location.LocationManager.GPS_PROVIDER;
 import static android.location.LocationManager.NETWORK_PROVIDER;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, LocationListener {
@@ -51,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     private Location myLocation;
     private LocationManager locationManager;
-
+    private boolean initUserOnCreate = true;
+    private boolean alertDialog = true;
     @BindView(R.id.gameOverTitle)
     ImageView gameOverTitle;
     @BindView(R.id.score)
@@ -77,19 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
-        } else {
-            locationManager.requestLocationUpdates(NETWORK_PROVIDER, 0, 0, this);
-            findUser();
-        }
-    }
-
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     @Override
@@ -101,24 +88,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 locationManager.requestLocationUpdates(NETWORK_PROVIDER, 0, 0, this);
                 findUser();
-            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, permissions[0]);
-                if (!showRationale) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage("Changing Permission:\napp -> settings\ngrant there the permissions.")
-                            .setCancelable(false)
-                            .setNegativeButton("OK", (dialog, id) -> finish());
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage("Please Confirm Access to Location")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", (dialog, id) -> ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS))
-                            .setNegativeButton("No", (dialog, id) -> finish());
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }
+            } else {
+                finish();
             }
         }
     }
@@ -303,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
         super.onStop();
+        locationManager.removeUpdates(this);
         setUserDB();
     }
 
@@ -323,5 +295,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             AlertDialog alert = builder.create();
             alert.show();
         }
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
+        } else {
+            if (initUserOnCreate) {
+                initUserOnCreate = false;
+                locationManager.requestLocationUpdates(NETWORK_PROVIDER, 0, 0, this);
+                findUser();
+            } else {
+                locationManager.requestLocationUpdates(NETWORK_PROVIDER, 0, 0, this);
+            }
+        }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
