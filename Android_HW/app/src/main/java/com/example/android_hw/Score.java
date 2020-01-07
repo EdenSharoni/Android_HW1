@@ -34,7 +34,7 @@ public class Score extends AppCompatTextView {
     }
 
     private void setScoreAnimation() {
-        scoreAnimation = ObjectAnimator.ofFloat(this, "rotation", 0f, 5f, 0f, -5f, 0f); // rotate o degree then 5 degree and so on for one loop of rotation.
+        scoreAnimation = ObjectAnimator.ofFloat(this, getContext().getString(R.string.rotation), 0f, 5f, 0f, -5f, 0f); // rotate o degree then 5 degree and so on for one loop of rotation.
         scoreAnimation.setInterpolator(new AccelerateInterpolator());
         scoreAnimation.setRepeatCount(2); // repeat the loop 20 times
         scoreAnimation.setDuration(100); // animation play time 100 ms

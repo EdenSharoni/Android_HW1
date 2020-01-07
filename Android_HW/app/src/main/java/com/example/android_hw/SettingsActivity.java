@@ -137,7 +137,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     @OnTextChanged(R.id.userName)
     public void afterTextChanged(Editable s) {
         if (userName.getText().toString().isEmpty() && getInstance().getCurrentUser() != null) {
-            Toast.makeText(getApplicationContext(), "please fill name", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.fill_name), Toast.LENGTH_LONG).show();
         }
     }
 

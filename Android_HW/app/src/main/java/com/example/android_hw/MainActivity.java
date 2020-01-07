@@ -1,15 +1,12 @@
 package com.example.android_hw;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,13 +42,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FirebaseUser user;
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
     private User localUser;
     private Intent intent;
-    private FirebaseAuth mAuth;
     private Location myLocation;
     private LocationManager locationManager;
     private boolean initUserOnCreate = true;
-    private boolean alertDialog = true;
+    private Service service;
+    private AlertDialogs alertDialog;
+
     @BindView(R.id.gameOverTitle)
     ImageView gameOverTitle;
     @BindView(R.id.score)
@@ -73,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         handleButtons(false);
+        service = new Service(this);
+        alertDialog = new AlertDialogs(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -83,9 +84,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_GPS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                     return;
-                }
                 locationManager.requestLocationUpdates(NETWORK_PROVIDER, 0, 0, this);
                 findUser();
             } else {
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
                             user = mAuth.getCurrentUser();
-                            Log.e("GPS", "onComplete: ");
                             if (myLocation == null) {
                                 localUser = new User(user.getUid(), "", 0, true, 80, getString(R.string.screen), 0, 0);
                             } else {
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void setUserDB() {
         progressBar.setVisibility(View.VISIBLE);
-        db.collection("Users")
+        db.collection(getString(R.string.users))
                 .document(user.getUid()).set(localUser).addOnSuccessListener(aVoid -> {
             progressBar.setVisibility(View.GONE);
             checkNameValid();
@@ -139,14 +138,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void getUserFromDB() {
         progressBar.setVisibility(View.VISIBLE);
-        db.collection("Users")
+        db.collection(getString(R.string.users))
                 .document(user.getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                             progressBar.setVisibility(View.GONE);
                             localUser = documentSnapshot.toObject(User.class);
                             if (localUser == null) {
-                                Log.e("GPS", "getUserFromDB: ");
                                 if (myLocation == null) {
                                     localUser = new User(user.getUid(), user.getDisplayName(), 0, true, 80, getString(R.string.screen), 0, 0);
                                 } else {
@@ -215,7 +213,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-
             if (requestCode == GAME_REQUEST_CODE || requestCode == SETTINGS_REQUEST_CODE || requestCode == POP_UP_NAME_REQUEST_CODE || requestCode == REQUEST_HIGHEST_SCORE) {
                 localUser = (User) Objects.requireNonNull(data.getExtras()).get(getString(R.string.localUser));
                 if (requestCode == GAME_REQUEST_CODE) {
@@ -223,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     highestScoreText.setText(String.format("%s %s", getString(R.string.highest), getString(R.string.score, localUser.getScore())));
                 }
             }
-
             if (user != null) {
                 handleButtons(false);
                 setUserDB();
@@ -234,7 +230,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.e(TAG, "onLocationChanged: ");
         myLocation = location;
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
@@ -246,7 +241,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.e(TAG, "onStatusChanged: ");
     }
 
     @Override
@@ -255,13 +249,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onProviderDisabled(String provider) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
-        final AlertDialog alert = builder.create();
-        alert.show();
+        alertDialog.GPSProviderDialog();
     }
 
     private void handleButtons(boolean bool) {
@@ -281,19 +269,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if (!isNetworkConnected()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setMessage("No Network")
-                    .setCancelable(false)
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        if (isNetworkConnected()) {
-                            dialog.dismiss();
-                        } else {
-                            finish();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
+        if (!service.isNetworkConnected()) {
+            alertDialog.networkConnectionDialog(service);
         }
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
@@ -308,9 +285,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
+
 }

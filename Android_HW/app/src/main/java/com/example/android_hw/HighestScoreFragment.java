@@ -52,33 +52,30 @@ public class HighestScoreFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
 
         db = FirebaseFirestore.getInstance();
-        db.collection("Users")
+        db.collection(getString(R.string.users))
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            myListOfDocuments = task.getResult().getDocuments();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        myListOfDocuments = task.getResult().getDocuments();
 
-                            for (int i = 0; i < myListOfDocuments.size(); i++) {
-                                unSortMap.put(myListOfDocuments.get(i).toObject(User.class), myListOfDocuments.get(i).toObject(User.class).getScore());
-                            }
-
-                            List<Map.Entry<User, Integer>> list = new LinkedList<>(unSortMap.entrySet());
-
-                            Collections.sort(list, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-
-                            for (Map.Entry<User, Integer> entry : list) {
-                                localUserArrayList.add(entry.getKey());
-                            }
-
-                            if (localUserArrayList.size() > 10) {
-                                numberOfUsers = 10;
-                            } else {
-                                numberOfUsers = localUserArrayList.size();
-                            }
-                            setXMLViewWithUsers();
+                        for (int i = 0; i < myListOfDocuments.size(); i++) {
+                            unSortMap.put(myListOfDocuments.get(i).toObject(User.class), myListOfDocuments.get(i).toObject(User.class).getScore());
                         }
+
+                        List<Map.Entry<User, Integer>> list = new LinkedList<>(unSortMap.entrySet());
+
+                        Collections.sort(list, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+
+                        for (Map.Entry<User, Integer> entry : list) {
+                            localUserArrayList.add(entry.getKey());
+                        }
+
+                        if (localUserArrayList.size() > 10) {
+                            numberOfUsers = 10;
+                        } else {
+                            numberOfUsers = localUserArrayList.size();
+                        }
+                        setXMLViewWithUsers();
                     }
                 });
 

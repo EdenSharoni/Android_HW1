@@ -15,7 +15,6 @@ import androidx.appcompat.widget.AppCompatImageView;
 public class Player extends AppCompatImageView {
 
     private static final String TAG = Player.class.getSimpleName();
-    private final long INIT_TIME = System.currentTimeMillis();
     private final int MAX_NUM_OF_LIVES = 3;
     private int num_lives = MAX_NUM_OF_LIVES;
     private GameActivity gameActivity;
@@ -25,11 +24,9 @@ public class Player extends AppCompatImageView {
     private Gyroscope gyroscope;
     private boolean left = false;
     private boolean right = false;
-    private GameActivity context;
 
     public Player(GameActivity context) {
         super(context);
-        this.context = context;
         gyroscope = new Gyroscope(context);
         setPlayer();
         this.gameActivity = context;
@@ -48,8 +45,8 @@ public class Player extends AppCompatImageView {
 
     public void animatePlayer(Drawable lego) {
         final Player player = this;
-        scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.3f);
-        scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.3f);
+        scaleX = ObjectAnimator.ofFloat(this, getContext().getString(R.string.scalex), 1.3f);
+        scaleY = ObjectAnimator.ofFloat(this, getContext().getString(R.string.scaley), 1.3f);
         scaleX.setDuration(100);
         scaleY.setDuration(100);
         scale = new AnimatorSet();
@@ -63,8 +60,8 @@ public class Player extends AppCompatImageView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                scaleX = ObjectAnimator.ofFloat(player, "scaleX", 1f);
-                scaleY = ObjectAnimator.ofFloat(player, "scaleY", 1f);
+                scaleX = ObjectAnimator.ofFloat(player, getContext().getString(R.string.scalex), 1f);
+                scaleY = ObjectAnimator.ofFloat(player, getContext().getString(R.string.scaley), 1f);
                 scaleX.setDuration(100);
                 scaleY.setDuration(100);
                 scale = new AnimatorSet();

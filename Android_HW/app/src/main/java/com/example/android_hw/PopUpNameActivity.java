@@ -48,12 +48,12 @@ public class PopUpNameActivity extends AppCompatActivity implements View.OnClick
             setResult(Activity.RESULT_OK, intent);
             finish();
         } else {
-            Toast.makeText(getApplicationContext(), "please fill name", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.fill_name), Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(getApplicationContext(), "please fill name", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.fill_name), Toast.LENGTH_LONG).show();
     }
 }

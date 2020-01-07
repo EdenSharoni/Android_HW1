@@ -109,8 +109,8 @@ public class Lego extends AppCompatImageView implements ValueAnimator.AnimatorUp
 
     private void disappearAnimation() {
         final Lego lego = this;
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 2.5f);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 2.5f);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, getContext().getString(R.string.scalex), 2.5f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, getContext().getString(R.string.scaley), 2.5f);
         scaleX.setDuration(50);
         scaleY.setDuration(50);
         AnimatorSet scale = new AnimatorSet();

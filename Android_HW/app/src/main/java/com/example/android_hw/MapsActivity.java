@@ -56,14 +56,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             localUser.setLongitude(0);
         }
         if ((localUser.getLatitude() == 0 && localUser.getLongitude() == 0) || location == null) {
-            Toast.makeText(getApplicationContext(), "Could Not Find Your Location GPS, Please Try Again Later.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.could_not_find_gps_location), Toast.LENGTH_LONG).show();
         }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
-        } else {
-            Log.e(TAG, "mapFragment is null");
         }
     }
 
@@ -75,7 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             setGoogleMaps(localUser);
         } catch (IOException e) {
-            Toast.makeText(getApplicationContext(), "Failed to build map", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.failed_to_build_map), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -83,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void setGoogleMaps(User user) throws IOException {
         addresses = geocoder.getFromLocation(user.getLatitude(), user.getLongitude(), 1);
         if (addresses == null) {
-            Log.e(TAG, "Waiting for Location");
+            Toast.makeText(getApplicationContext(), getString(R.string.waiting_for_location), Toast.LENGTH_LONG).show();
         } else if (addresses.size() > 0) {
             address = addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName();
             Toast.makeText(getApplicationContext(), address, Toast.LENGTH_LONG).show();

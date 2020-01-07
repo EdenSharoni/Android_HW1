@@ -5,9 +5,6 @@
     <string name="highest">Highest</string>
     <string name="MyPref">MyPref</string>
     <string name="highestScore">highestScore</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="vibrate">vibrate</string>
     <string name="music">music</string>
     <string name="vibrationNumber">vibrationNumber</string>
@@ -17,4 +14,17 @@
     <string name="motion">motion</string>
     <string name="title_activity_maps">Map</string>
     <string name="location">Location</string>
+    <string name="enable_gps_dialog">Your GPS seems to be disabled, do you want to enable it?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="no_network">No Network</string>
+    <string name="ok">OK</string>
+    <string name="users">Users</string>
+    <string name="scalex">scaleX</string>
+    <string name="scaley">scaleY</string>
+    <string name="could_not_find_gps_location">Could Not Find Your Location GPS, Please Try Again Later.</string>
+    <string name="failed_to_build_map">Failed to build map</string>
+    <string name="waiting_for_location">Waiting for Location</string>
+    <string name="fill_name">please fill name</string>
+    <string name="rotation">rotation</string>
 </resources>
