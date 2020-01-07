@@ -4,7 +4,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -37,6 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String address;
     private Geocoder geocoder;
     private LatLng latLng;
+    private Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +49,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (bundle != null) {
             localUser = (User) bundle.get(getString(R.string.localUser));
+            location = (Location) bundle.get(getString(R.string.location));
         } else {
             localUser = new User();
             localUser.setLatitude(0);
             localUser.setLongitude(0);
         }
-
+        if ((localUser.getLatitude() == 0 && localUser.getLongitude() == 0) || location == null) {
+            Toast.makeText(getApplicationContext(), "Could Not Find Your Location GPS, Please Try Again Later.", Toast.LENGTH_LONG).show();
+        }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
-        }
-        else{
+        } else {
             Log.e(TAG, "mapFragment is null");
         }
     }
@@ -86,5 +91,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         latLng = new LatLng(user.getLatitude(), user.getLongitude());
         mMap.addMarker(new MarkerOptions().position(latLng).title(address));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra(getString(R.string.localUser), localUser);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

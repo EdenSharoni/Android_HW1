@@ -10,8 +10,13 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <meta-data
         android:name="com.google.android.maps.v2.API_KEY"
         android:value="AIzaSyAlVw_WaBxk3HnltnzLnm59ffttGhcBoR0"/>
@@ -19,6 +24,8 @@
     <uses-feature
         android:name="android.hardware.sensor.gyroscope"
         android:required="true" />
+
+
 
     <application
         android:allowBackup="true"
@@ -66,6 +73,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".MainActivity" />
     </application>
 
 </manifest>

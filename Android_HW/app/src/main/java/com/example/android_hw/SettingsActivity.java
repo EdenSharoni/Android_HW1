@@ -156,4 +156,9 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        saveSettings();
+    }
 }

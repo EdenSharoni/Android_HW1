@@ -254,4 +254,9 @@ public class GameActivity extends AppCompatActivity {
     public User getLocalUser() {
         return localUser;
     }
+
+    @Override
+    public void onBackPressed() {
+        EndGame();
+    }
 }

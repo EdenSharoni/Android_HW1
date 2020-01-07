@@ -8,13 +8,14 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.location.LocationManager.GPS_PROVIDER;
+import static android.location.LocationManager.NETWORK_PROVIDER;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, LocationListener {
 
@@ -40,9 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int GAME_REQUEST_CODE = 1;
     private static final int SETTINGS_REQUEST_CODE = 2;
     private static final int POP_UP_NAME_REQUEST_CODE = 3;
-    private static final int MIN_TIME = 20000;
-    private static final float MIN_DISTANCE = 20f;
-    private static final int REQUEST_INTERNET = 2;
+    private static final int REQUEST_HIGHEST_SCORE = 4;
 
     private FirebaseUser user;
     private FirebaseFirestore db;
@@ -78,15 +78,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.INTERNET}, REQUEST_INTERNET);
-        }
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS);
         } else {
-            locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+            locationManager.requestLocationUpdates(NETWORK_PROVIDER, 0, 0, this);
             findUser();
         }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     @Override
@@ -96,14 +99,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+                locationManager.requestLocationUpdates(NETWORK_PROVIDER, 0, 0, this);
                 findUser();
-            }
-        }
-        if(requestCode == REQUEST_INTERNET){
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, permissions[0]);
+                if (!showRationale) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Changing Permission:\napp -> settings\ngrant there the permissions.")
+                            .setCancelable(false)
+                            .setNegativeButton("OK", (dialog, id) -> finish());
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Please Confirm Access to Location")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", (dialog, id) -> ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GPS))
+                            .setNegativeButton("No", (dialog, id) -> finish());
+                    AlertDialog alert = builder.create();
+                    alert.show();
                 }
             }
         }
@@ -183,11 +197,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     @OnClick({R.id.playBtn, R.id.helpBtn, R.id.exitBtn, R.id.highestScoreBtn, R.id.settingsBtn})
     public void onClick(View v) {
+        handleButtons(false);
         switch (v.getId()) {
             case R.id.playBtn:
                 startGame();
                 break;
             case R.id.helpBtn:
+                handleButtons(true);
                 startActivity(new Intent(getApplicationContext(), HelpActivity.class));
                 break;
             case R.id.highestScoreBtn:
@@ -197,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 settingsActivity();
                 break;
             case R.id.exitBtn:
+                setUserDB();
                 finish();
                 break;
         }
@@ -211,7 +228,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void showHighestScore() {
         intent = new Intent(getApplicationContext(), MapsActivity.class);
         intent.putExtra(getString(R.string.localUser), localUser);
-        startActivity(intent);
+        intent.putExtra(getString(R.string.location), myLocation);
+        handleButtons(true);
+        startActivityForResult(this.intent, REQUEST_HIGHEST_SCORE);
     }
 
     private void settingsActivity() {
@@ -226,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (resultCode == RESULT_OK) {
 
-            if (requestCode == GAME_REQUEST_CODE || requestCode == SETTINGS_REQUEST_CODE || requestCode == POP_UP_NAME_REQUEST_CODE) {
+            if (requestCode == GAME_REQUEST_CODE || requestCode == SETTINGS_REQUEST_CODE || requestCode == POP_UP_NAME_REQUEST_CODE || requestCode == REQUEST_HIGHEST_SCORE) {
                 localUser = (User) Objects.requireNonNull(data.getExtras()).get(getString(R.string.localUser));
                 if (requestCode == GAME_REQUEST_CODE) {
                     gameOverTitle.setVisibility(View.VISIBLE);
@@ -241,20 +260,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     @Override
     public void onLocationChanged(Location location) {
+        Log.e(TAG, "onLocationChanged: ");
         myLocation = location;
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         if (localUser != null) {
             localUser.setLongitude(longitude);
             localUser.setLatitude(latitude);
-            setUserDB();
         }
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.e(TAG, "onStatusChanged: ");
     }
 
     @Override
@@ -277,5 +298,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         help.setEnabled(bool);
         highestScore.setEnabled(bool);
         settings.setEnabled(bool);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        setUserDB();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isNetworkConnected()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("No Network")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        if (isNetworkConnected()) {
+                            dialog.dismiss();
+                        } else {
+                            finish();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 }
